@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <meta
+        name="description"
+        content="Barhapur Quick - groceries and everyday essentials."
+    >
+
+    <title>Bharapur Quick</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+
+<body>
+
+    <!-- TOP BAR -->
+
+    <header class="top-bar">
+<div class="delivery-location">
+    📍 Delivering to <strong>Bharapur</strong>
+</div>
+        <div class="brand">
+            🛒 <span>Bharapur Quick</span>
+        </div>
+
+        <button
+            class="cart-button"
+            id="cartButton"
+            type="button"
+        >
+            🛒
+            <span id="cartCount">0</span>
+        </button>
+
+    </header>
+
+
+    <!-- =========================
+         HOME PAGE
+    ========================== -->
+
+    <main
+        id="homePage"
+        class="page active-page"
+    >
+
+        <section class="hero">
+
+            <h1>
+                Everything you need,
+                delivered to you.
+            </h1>
+
+            <p>
+                Groceries, snacks and everyday
+                essentials.
+            </p>
+
+            <div class="search-box">
+
+                <span>🔍</span>
+
+                <input
+                    id="searchInput"
+                    type="search"
+                    placeholder="Search products..."
+                >
+
+            </div>
+
+        </section>
+
+
+        <section class="section">
+
+            <h2>
+                Shop by category
+            </h2>
+
+            <div
+                class="categories"
+                id="categoryContainer"
+            ></div>
+
+        </section>
+
+
+        <section class="section">
+
+            <div class="section-heading">
+
+                <h2>
+                    Popular products
+                </h2>
+
+                <button
+                    id="viewAllButton"
+                    class="view-all"
+                    type="button"
+                >
+                    View all
+                </button>
+
+            </div>
+
+
+            <div
+                class="products"
+                id="productContainer"
+            ></div>
+
+            <p
+                id="noProducts"
+                class="no-products hidden"
+            >
+                No products found.
+            </p>
+
+        </section>
+
+    </main>
+
+
+    <!-- =========================
+         MENU PAGE
+    ========================== -->
+
+    <section
+        id="menuPage"
+        class="page"
+    >
+
+        <div class="page-header">
+
+            <h1>☰ Menu</h1>
+
+            <p>
+                Browse all departments
+            </p>
+
+        </div>
+
+        <div
+            id="menuCategories"
+            class="menu-list"
+        ></div>
+
+    </section>
+
+
+    <!-- =========================
+         ORDERS PAGE
+    ========================== -->
+
+    <section
+        id="ordersPage"
+        class="page"
+    >
+
+        <div class="page-header">
+
+            <h1>📦 Orders</h1>
+
+            <p>
+                Your recent orders
+            </p>
+
+        </div>
+
+
+        <div id="ordersList">
+
+            <div class="empty-page">
+
+                <div>📦</div>
+
+                <h2>
+                    No orders yet
+                </h2>
+
+                <p>
+                    Your orders will appear here.
+                </p>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================
+         WISHLIST PAGE
+    ========================== -->
+
+    <section
+        id="wishlistPage"
+        class="page"
+    >
+
+        <div class="page-header">
+
+            <h1>❤️ Wishlist</h1>
+
+            <p>
+                Products you've saved
+            </p>
+
+        </div>
+
+
+        <div
+            id="wishlistProducts"
+            class="products"
+        ></div>
+
+
+        <div
+            id="emptyWishlist"
+            class="empty-page"
+        >
+
+            <div>♡</div>
+
+            <h2>
+                Your wishlist is empty
+            </h2>
+
+            <p>
+                Tap ♡ on a product to save it.
+            </p>
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================
+         ACCOUNT PAGE
+    ========================== -->
+
+    <section
+        id="accountPage"
+        class="page"
+    >
+
+        <div class="page-header">
+
+            <h1>👤 Account</h1>
+
+            <p>
+                Manage your account
+            </p>
+
+        </div>
+
+
+        <div class="account-card">
+
+            <div class="account-icon">
+                👤
+            </div>
+
+            <h2>
+                Welcome!
+            </h2>
+
+            <p>
+                Account features will be added here.
+            </p>
+
+        </div>
+<button class="owner-access-button" id="ownerAccessButton">
+  <div class="owner-icon">◆</div>
+
+  <div class="owner-info">
+    <strong>Owner Management</strong>
+    <small>Manage products & store</small>
+  </div>
+
+  <span class="owner-arrow">›</span>
+</button>
+    </section>
+
+
+    <!-- =========================
+         CART PANEL
+    ========================== -->
+
+    <aside
+        id="cartPanel"
+        class="cart-panel"
+    >
+
+        <div class="cart-header">
+
+            <h2>
+                🛒 Your Cart
+            </h2>
+
+            <button
+                id="closeCartButton"
+                type="button"
+            >
+                ✕
+            </button>
+
+        </div>
+
+
+        <div
+            id="cartItems"
+            class="cart-items"
+        ></div>
+
+
+        <div
+            id="cartEmpty"
+            class="cart-empty"
+        >
+
+            <div>🛒</div>
+
+            <h3>
+                Your cart is empty
+            </h3>
+
+            <p>
+                Add something you like!
+            </p>
+
+        </div>
+
+
+        <div class="cart-footer">
+
+            <div class="cart-total">
+
+                <span>
+                    Total
+                </span>
+
+                <strong>
+                    ₹<span id="cartTotal">0</span>
+                </strong>
+
+            </div>
+
+
+            <button
+                id="checkoutButton"
+                class="checkout-button"
+                type="button"
+                disabled
+            >
+                Place order
+            </button>
+
+        </div>
+
+    </aside>
+
+
+    <!-- DARK OVERLAY -->
+
+    <div
+        id="overlay"
+        class="overlay"
+    ></div>
+
+
+    <!-- =========================
+         ORDER POPUP
+    ========================== -->
+
+    <button
+        id="orderToast"
+        class="order-toast"
+        type="button"
+    >
+
+        <div class="toast-icon">
+            ✓
+        </div>
+
+        <div>
+
+            <strong>
+                Order placed!
+            </strong>
+
+            <p id="toastText">
+                Your order has been confirmed.
+            </p>
+
+            <small>
+                Tap to view order
+            </small>
+
+        </div>
+
+    </button>
+
+
+    <!-- =========================
+         BOTTOM NAVIGATION
+    ========================== -->
+
+    <nav class="bottom-nav">
+
+        <button
+            class="nav-button active"
+            data-page="homePage"
+            type="button"
+        >
+            <span>🏠</span>
+            <small>Home</small>
+        </button>
+
+
+        <button
+            class="nav-button"
+            data-page="menuPage"
+            type="button"
+        >
+            <span>☰</span>
+            <small>Menu</small>
+        </button>
+
+
+        <button
+            class="nav-button"
+            data-page="ordersPage"
+            type="button"
+        >
+            <span>📦</span>
+            <small>Orders</small>
+        </button>
+
+
+        <button
+            class="nav-button"
+            data-page="wishlistPage"
+            type="button"
+        >
+            <span>♡</span>
+            <small>Wishlist</small>
+        </button>
+
+
+        <button
+            class="nav-button"
+            data-page="accountPage"
+            type="button"
+        >
+            <span>👤</span>
+            <small>Account</small>
+        </button>
+
+    </nav>
+
+
+    <script src="script.js"></script>
+<!-- ADMIN / OWNER PAGE -->
+<section id="adminPage" class="page">
+  <div class="admin-header">
+    <button id="adminBackButton">← Back</button>
+    <h2>Owner Product Manager</h2>
+  </div>
+
+  <div class="admin-box">
+    <h3>Add Product</h3>
+
+    <input id="adminProductName" type="text" placeholder="Product name">
+
+    <input id="adminProductPrice" type="number" placeholder="Price">
+
+    <input id="adminProductCategory" type="text" placeholder="Category">
+
+    <input id="adminProductImage" type="text" placeholder="Product image URL">
+
+    <button id="addProductButton">
+      + Add Product
+    </button>
+  </div>
+
+  <div class="admin-box">
+    <h3>Your Products</h3>
+    <div id="adminProductList"></div>
+  </div>
+</section> 
+<div id="ownerLoginModal" class="owner-login-modal">
+  <div class="owner-login-card">
+
+    <button id="closeOwnerLogin" class="owner-login-close">×</button>
+
+    <div class="owner-login-icon">◆</div>
+
+    <h2>Owner Management</h2>
+    <p>Sign in to manage your store</p>
+
+    <label for="ownerPasswordInput">Owner password</label>
+
+    <input
+      id="ownerPasswordInput"
+      type="password"
+      placeholder="Enter your password"
+      autocomplete="off"
+    >
+
+    <button id="ownerLoginButton" class="owner-login-button">
+      Continue
+    </button>
+
+    <p id="ownerLoginError" class="owner-login-error"></p>
+
+  </div>
+</div>
+<!-- Official Success Popup -->
+<div id="bqSuccessPopup" class="bq-success-overlay">
+
+    <div class="bq-success-card">
+
+        <div class="bq-success-icon">
+            ✓
+        </div>
+
+        <h3 id="bqSuccessTitle">
+            Success
+        </h3>
+
+        <p id="bqSuccessMessage">
+            Your changes have been saved.
+        </p>
+
+        <button
+            id="bqSuccessButton"
+            class="bq-success-button"
+            type="button"
+        >
+            Done
+        </button>
+
+    </div>
+
+</div>
+<!-- Official Success Popup -->
+<div id="bqSuccessPopup" class="bq-success-overlay">
+
+    <div class="bq-success-card">
+
+        <div class="bq-success-icon">
+            ✓
+        </div>
+
+        <h3 id="bqSuccessTitle">
+            Success
+        </h3>
+
+        <p id="bqSuccessMessage">
+            Your changes have been saved.
+        </p>
+
+        <button
+            id="bqSuccessButton"
+            class="bq-success-button"
+            type="button"
+        >
+            Done
+        </button>
+
+    </div>
+
+</div>
+</body>
+
+</html>
+
