@@ -3937,6 +3937,457 @@ renderWishlist = function() {
                         Number.isFinite(
                             productId
                         )
+                        /* =========================================================
+   BHARAPUR QUICK - FINAL MANAGER BUTTON FIX
+   Paste this at the VERY BOTTOM of script.js
+========================================================= */
+
+(function () {
+
+    function bqGet(id) {
+        return document.getElementById(id);
+    }
+
+
+    /* =====================================================
+       OFFICIAL POPUP
+    ===================================================== */
+
+    window.showOfficialPopup = function (title, message) {
+
+        const popup = bqGet("bqSuccessPopup");
+        const titleElement = bqGet("bqSuccessTitle");
+        const messageElement = bqGet("bqSuccessMessage");
+
+        if (!popup) {
+            console.error(
+                "Bharapur Quick: Success popup not found."
+            );
+            return;
+        }
+
+        if (titleElement) {
+            titleElement.textContent = title;
+        }
+
+        if (messageElement) {
+            messageElement.textContent = message;
+        }
+
+        popup.classList.add("show");
+    };
+
+
+    /* =====================================================
+       CLOSE SUCCESS POPUP
+    ===================================================== */
+
+    function setupBharapurSuccessPopup() {
+
+        const button = bqGet("bqSuccessButton");
+
+        if (!button) return;
+
+        const newButton = button.cloneNode(true);
+
+        button.replaceWith(newButton);
+
+        newButton.addEventListener("click", function () {
+
+            const popup = bqGet("bqSuccessPopup");
+
+            if (popup) {
+                popup.classList.remove("show");
+            }
+
+        });
+
+    }
+
+
+    /* =====================================================
+       SAVE SHOP DETAILS
+    ===================================================== */
+
+    window.saveManagerProfileFromForm = function () {
+
+        const nameInput =
+            bqGet("managerName");
+
+        const shopInput =
+            bqGet("managerShopName");
+
+        const typeInput =
+            bqGet("managerStoreType");
+
+        const descriptionInput =
+            bqGet("managerShopDescription");
+
+
+        const managerName =
+            nameInput
+                ? nameInput.value.trim()
+                : "";
+
+        const shopName =
+            shopInput
+                ? shopInput.value.trim()
+                : "";
+
+        const storeType =
+            typeInput
+                ? typeInput.value.trim()
+                : "";
+
+        const shopDescription =
+            descriptionInput
+                ? descriptionInput.value.trim()
+                : "";
+
+
+        /* REQUIRED FIELDS */
+
+        if (
+            !managerName ||
+            !shopName ||
+            !storeType
+        ) {
+
+            window.showOfficialPopup(
+                "Missing Shop Details",
+                "Please enter your name, shop name and store type before saving."
+            );
+
+            return;
+        }
+
+
+        /* SAVE PROFILE */
+
+        managerProfile = {
+
+            name: managerName,
+
+            shopName: shopName,
+
+            storeType: storeType,
+
+            description: shopDescription
+
+        };
+
+
+        saveManagerProfile();
+
+
+        /* REFRESH PRODUCTS */
+
+        if (
+            typeof renderManagerProducts ===
+            "function"
+        ) {
+            renderManagerProducts();
+        }
+
+
+        /* SUCCESS */
+
+        window.showOfficialPopup(
+            "Shop Details Saved",
+            '"' +
+            shopName +
+            '" details have been saved successfully.'
+        );
+
+    };
+
+
+    /* =====================================================
+       ADD PRODUCT
+    ===================================================== */
+
+    function setupAddProductButton() {
+
+        const oldButton =
+            bqGet("addProductButton");
+
+        if (!oldButton) return;
+
+
+        /*
+         Remove the old click listeners
+         so the old native alert does not run.
+        */
+
+        const button =
+            oldButton.cloneNode(true);
+
+        oldButton.replaceWith(button);
+
+
+        button.addEventListener(
+            "click",
+            function () {
+
+                const nameInput =
+                    bqGet("adminProductName");
+
+                const priceInput =
+                    bqGet("adminProductPrice");
+
+                const categoryInput =
+                    bqGet("adminProductCategory");
+
+                const imageInput =
+                    bqGet("adminProductImage");
+
+
+                const name =
+                    nameInput
+                        ? nameInput.value.trim()
+                        : "";
+
+                const price =
+                    priceInput
+                        ? priceInput.value.trim()
+                        : "";
+
+                const category =
+                    categoryInput
+                        ? categoryInput.value.trim()
+                        : "";
+
+                const image =
+                    imageInput
+                        ? imageInput.value.trim()
+                        : "";
+
+
+                /* VALIDATION */
+
+                if (
+                    !name ||
+                    !price ||
+                    !category
+                ) {
+
+                    window.showOfficialPopup(
+                        "Missing Product Details",
+                        "Please enter the product name, price and category."
+                    );
+
+                    return;
+                }
+
+
+                const numericPrice =
+                    Number(price);
+
+
+                if (
+                    !Number.isFinite(
+                        numericPrice
+                    ) ||
+                    numericPrice <= 0
+                ) {
+
+                    window.showOfficialPopup(
+                        "Invalid Price",
+                        "Please enter a valid product price greater than zero."
+                    );
+
+                    return;
+                }
+
+
+                /*
+                 Use the existing product system.
+                */
+
+                const newProduct = {
+
+                    id:
+                        Date.now(),
+
+                    name:
+                        name,
+
+                    price:
+                        numericPrice,
+
+                    category:
+                        category,
+
+                    image:
+                        image,
+
+                    emoji:
+                        "📦",
+
+                    ownerType:
+                        "manager",
+
+                    managerId:
+                        managerId
+
+                };
+
+
+                managerProducts.push(
+                    newProduct
+                );
+
+
+                saveManagerProducts();
+
+
+                /* CLEAR FORM */
+
+                if (nameInput) {
+                    nameInput.value = "";
+                }
+
+                if (priceInput) {
+                    priceInput.value = "";
+                }
+
+                if (categoryInput) {
+                    categoryInput.value = "";
+                }
+
+                if (imageInput) {
+                    imageInput.value = "";
+                }
+
+
+                /* REFRESH MANAGER LIST */
+
+                if (
+                    typeof renderManagerProducts ===
+                    "function"
+                ) {
+                    renderManagerProducts();
+                }
+
+
+                /* REFRESH HOME PRODUCTS */
+
+                if (
+                    typeof renderProducts ===
+                    "function"
+                ) {
+                    renderProducts();
+                }
+
+                if (
+                    typeof renderCategories ===
+                    "function"
+                ) {
+                    renderCategories();
+                }
+
+
+                /* SUCCESS */
+
+                window.showOfficialPopup(
+                    "Product Added",
+                    '"' +
+                    name +
+                    '" has been added successfully.'
+                );
+
+            }
+        );
+
+    }
+
+
+    /* =====================================================
+       SAVE SHOP BUTTON
+    ===================================================== */
+
+    function setupSaveShopButton() {
+
+        const oldButton =
+            bqGet("saveManagerProfileButton");
+
+        if (!oldButton) return;
+
+
+        /*
+         Remove old listeners.
+        */
+
+        const button =
+            oldButton.cloneNode(true);
+
+        oldButton.replaceWith(button);
+
+
+        button.addEventListener(
+            "click",
+            function () {
+
+                window.saveManagerProfileFromForm();
+
+            }
+        );
+
+    }
+
+
+    /* =====================================================
+       SET EVERYTHING UP
+    ===================================================== */
+
+    function setupBharapurManagerFix() {
+
+        setupBharapurSuccessPopup();
+
+        setupSaveShopButton();
+
+        setupAddProductButton();
+
+    }
+
+
+    /*
+     Run when page is ready.
+    */
+
+    if (
+        document.readyState ===
+        "loading"
+    ) {
+
+        document.addEventListener(
+            "DOMContentLoaded",
+            setupBharapurManagerFix
+        );
+
+    } else {
+
+        setupBharapurManagerFix();
+
+    }
+
+
+    /*
+     Manager page may be created dynamically.
+     Watch for it and reconnect the buttons.
+    */
+
+    const observer =
+        new MutationObserver(
+            function () {
+
+                const saveButton =
+                    bqGet(
+                        "saveManagerProfileButton"
+                    );
+
+                const addButton =
+                    bqGet(
                     ) {
 
                         openProductDetails(
