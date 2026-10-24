@@ -4351,3 +4351,1464 @@ renderWishlist = function() {
         });
     }
 })();
+/* =========================================================
+   BHARAPUR QUICK - ADDRESS + ORDER SYSTEM
+   ========================================================= */
+
+(function () {
+    "use strict";
+
+    function BQOrderGet(id) {
+        return document.getElementById(id);
+    }
+
+    function BQOrderDeliveryCharge(subtotal) {
+        if (subtotal < 60) return 5;
+        if (subtotal < 100) return 7;
+        return 10;
+    }
+
+    function BQOrderAddressPopup() {
+        const old = BQOrderGet("bqOrderAddressModal");
+
+        if (old) {
+            old.remove();
+        }
+
+        const modal = document.createElement("div");
+
+        modal.id = "bqOrderAddressModal";
+
+        modal.style.cssText = `
+            position:fixed;
+            inset:0;
+            z-index:100000;
+            background:rgba(0,0,0,.55);
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            padding:18px;
+            box-sizing:border-box;
+        `;
+
+        modal.innerHTML = `
+            <div style="
+                width:min(100%,420px);
+                max-height:90vh;
+                overflow:auto;
+                background:#fff;
+                border-radius:22px;
+                padding:22px;
+                box-sizing:border-box;
+                box-shadow:0 20px 60px rgba(0,0,0,.25);
+            ">
+
+                <div style="
+                    display:flex;
+                    justify-content:space-between;
+                    align-items:center;
+                    margin-bottom:18px;
+                ">
+                    <div>
+                        <h2 style="margin:0 0 5px;">
+                            📍 Delivery Address
+                        </h2>
+
+                        <p style="
+                            margin:0;
+                            color:#777;
+                            font-size:13px;
+                        ">
+                            Enter your address for this order.
+                        </p>
+                    </div>
+
+                    <button
+                        id="bqOrderAddressClose"
+                        type="button"
+                        style="
+                            border:none;
+                            background:#f2f2f2;
+                            width:38px;
+                            height:38px;
+                            border-radius:50%;
+                            font-size:22px;
+                        "
+                    >
+                        ×
+                    </button>
+                </div>
+
+                <label style="
+                    display:block;
+                    font-weight:700;
+                    margin-bottom:6px;
+                ">
+                    Full address
+                </label>
+
+                <textarea
+                    id="bqOrderAddressInput"
+                    rows="5"
+                    placeholder="House/Flat number, street, area, landmark..."
+                    style="
+                        width:100%;
+                        box-sizing:border-box;
+                        padding:14px;
+                        border:1px solid #ddd;
+                        border-radius:14px;
+                        resize:vertical;
+                        font-size:15px;
+                        outline:none;
+                    "
+                ></textarea>
+
+                <p
+                    id="bqOrderAddressError"
+                    style="
+                        display:none;
+                        color:#c62828;
+                        font-size:13px;
+                        margin:7px 0 0;
+                    "
+                ></p>
+
+                <button
+                    id="bqContinueAddressButton"
+                    type="button"
+                    style="
+                        width:100%;
+                        margin-top:16px;
+                        padding:15px;
+                        border:none;
+                        border-radius:14px;
+                        background:#111;
+                        color:#fff;
+                        font-size:16px;
+                        font-weight:700;
+                    "
+                >
+                    Continue
+                </button>
+
+            </div>
+        `;
+
+        document.body.appendChild(modal);
+
+        const input =
+            BQOrderGet("bqOrderAddressInput");
+
+        const close =
+            BQOrderGet("bqOrderAddressClose");
+
+        const continueButton =
+            BQOrderGet("bqContinueAddressButton");
+
+        if (close) {
+            close.addEventListener("click", () => {
+                modal.remove();
+            });
+        }
+
+        modal.addEventListener("click", event => {
+            if (event.target === modal) {
+                modal.remove();
+            }
+        });
+
+        if (continueButton) {
+            continueButton.addEventListener(
+                "click",
+                () => {
+                    const address =
+                        input
+                            ? input.value.trim()
+                            : "";
+
+                    const error =
+                        BQOrderGet(
+                            "bqOrderAddressError"
+                        );
+
+                    if (!address) {
+                        if (error) {
+                            error.textContent =
+                                "Please enter your delivery address.";
+                            error.style.display =
+                                "block";
+                        }
+
+                        if (input) {
+                            input.focus();
+                        }
+
+                        return;
+                    }
+
+                    modal.remove();
+
+                    BQShowOrderSummary(address);
+                }
+            );
+        }
+
+        setTimeout(() => {
+            if (input) input.focus();
+        }, 100);
+    }
+
+    function BQShowOrderSummary(address) {
+        if (!Array.isArray(cart) || cart.length === 0) {
+            if (typeof showOfficialPopup === "function") {
+                showOfficialPopup(
+                    "Cart is Empty",
+                    "Please add products before placing an order."
+                );
+            }
+
+            return;
+        }
+
+        let subtotal = 0;
+
+        cart.forEach(item => {
+            subtotal +=
+                Number(item.price) *
+                Number(item.quantity);
+        });
+
+        const delivery =
+            BQOrderDeliveryCharge(subtotal);
+
+        const finalTotal =
+            subtotal + delivery;
+
+        const old =
+            BQOrderGet("bqOrderSummaryModal");
+
+        if (old) {
+            old.remove();
+        }
+
+        const modal =
+            document.createElement("div");
+
+        modal.id =
+            "bqOrderSummaryModal";
+
+        modal.style.cssText = `
+            position:fixed;
+            inset:0;
+            z-index:100001;
+            background:rgba(0,0,0,.55);
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            padding:18px;
+            box-sizing:border-box;
+        `;
+
+        const itemsHTML =
+            cart.map(item => `
+                <div style="
+                    display:flex;
+                    justify-content:space-between;
+                    gap:10px;
+                    padding:8px 0;
+                    border-bottom:1px solid #eee;
+                ">
+                    <span>
+                        ${BQOrderEscape(item.name)}
+                        × ${Number(item.quantity)}
+                    </span>
+
+                    <strong>
+                        ₹${Number(item.price) * Number(item.quantity)}
+                    </strong>
+                </div>
+            `).join("");
+
+        modal.innerHTML = `
+            <div style="
+                width:min(100%,430px);
+                max-height:90vh;
+                overflow:auto;
+                background:#fff;
+                border-radius:22px;
+                padding:22px;
+                box-sizing:border-box;
+                box-shadow:0 20px 60px rgba(0,0,0,.25);
+            ">
+
+                <h2 style="
+                    margin:0 0 18px;
+                ">
+                    🧾 Order Summary
+                </h2>
+
+                <div style="
+                    background:#f7f7f7;
+                    border-radius:14px;
+                    padding:12px;
+                    margin-bottom:16px;
+                    font-size:14px;
+                    line-height:1.5;
+                ">
+                    <strong>📍 Delivery Address</strong>
+                    <div style="
+                        margin-top:5px;
+                        color:#555;
+                    ">
+                        ${BQOrderEscape(address)}
+                    </div>
+                </div>
+
+                <div style="
+                    margin-bottom:16px;
+                ">
+                    ${itemsHTML}
+                </div>
+
+                <div style="
+                    padding-top:8px;
+                ">
+                    <div style="
+                        display:flex;
+                        justify-content:space-between;
+                        margin:8px 0;
+                    ">
+                        <span>Items total</span>
+                        <strong>₹${subtotal}</strong>
+                    </div>
+
+                    <div style="
+                        display:flex;
+                        justify-content:space-between;
+                        margin:8px 0;
+                    ">
+                        <span>Delivery charge</span>
+                        <strong>₹${delivery}</strong>
+                    </div>
+
+                    <div style="
+                        display:flex;
+                        justify-content:space-between;
+                        margin-top:14px;
+                        padding-top:14px;
+                        border-top:1px solid #ddd;
+                        font-size:19px;
+                    ">
+                        <strong>Total</strong>
+                        <strong>₹${finalTotal}</strong>
+                    </div>
+                </div>
+
+                <button
+                    id="bqConfirmOrderButton"
+                    type="button"
+                    style="
+                        width:100%;
+                        margin-top:18px;
+                        padding:15px;
+                        border:none;
+                        border-radius:14px;
+                        background:#111;
+                        color:#fff;
+                        font-size:16px;
+                        font-weight:700;
+                    "
+                >
+                    Confirm Order · ₹${finalTotal}
+                </button>
+
+                <button
+                    id="bqBackToAddressButton"
+                    type="button"
+                    style="
+                        width:100%;
+                        margin-top:9px;
+                        padding:13px;
+                        border:none;
+                        border-radius:14px;
+                        background:#f1f1f1;
+                        color:#111;
+                        font-size:15px;
+                        font-weight:700;
+                    "
+                >
+                    Change Address
+                </button>
+
+            </div>
+        `;
+
+        document.body.appendChild(modal);
+
+        const confirmButton =
+            BQOrderGet("bqConfirmOrderButton");
+
+        const backButton =
+            BQOrderGet("bqBackToAddressButton");
+
+        if (backButton) {
+            backButton.addEventListener(
+                "click",
+                () => {
+                    modal.remove();
+                    BQOrderAddressPopup();
+                }
+            );
+        }
+
+        if (confirmButton) {
+            confirmButton.addEventListener(
+                "click",
+                () => {
+                    BQConfirmOrder(
+                        address,
+                        subtotal,
+                        delivery,
+                        finalTotal
+                    );
+                }
+            );
+        }
+    }
+
+    function BQConfirmOrder(
+        address,
+        subtotal,
+        delivery,
+        finalTotal
+    ) {
+        if (!Array.isArray(cart) || cart.length === 0) {
+            return;
+        }
+
+        const order = {
+            id:
+                "BQ-" +
+                Date.now(),
+
+            items:
+                JSON.parse(
+                    JSON.stringify(cart)
+                ),
+
+            address:
+                address,
+
+            subtotal:
+                subtotal,
+
+            deliveryCharge:
+                delivery,
+
+            total:
+                finalTotal,
+
+            date:
+                new Date().toLocaleString(),
+
+            status:
+                "Confirmed"
+        };
+
+        if (!Array.isArray(orders)) {
+            orders = [];
+        }
+
+        orders.unshift(order);
+
+        localStorage.setItem(
+            "bharapurOrders",
+            JSON.stringify(orders)
+        );
+
+        cart = [];
+
+        localStorage.setItem(
+            "bharapurCart",
+            JSON.stringify(cart)
+        );
+
+        const summary =
+            BQOrderGet(
+                "bqOrderSummaryModal"
+            );
+
+        if (summary) {
+            summary.remove();
+        }
+
+        if (typeof renderCart === "function") {
+            renderCart();
+        }
+
+        if (typeof updateCartCount === "function") {
+            updateCartCount();
+        }
+
+        if (typeof renderOrders === "function") {
+            renderOrders();
+        }
+
+        if (typeof closeCart === "function") {
+            closeCart();
+        }
+
+        if (typeof showOfficialPopup === "function") {
+            showOfficialPopup(
+                "Order Confirmed 🎉",
+                `Your order ${order.id} has been placed successfully. Total: ₹${finalTotal}`
+            );
+        }
+    }
+
+    function BQOrderEscape(value) {
+        return String(value ?? "")
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+    }
+
+    /*
+       Replace the existing checkout action.
+       The cart button still uses the same HTML button.
+    */
+    document.addEventListener(
+        "click",
+        function (event) {
+            const button =
+                event.target.closest(
+                    "#checkoutButton"
+                );
+
+            if (!button) return;
+
+            event.preventDefault();
+            event.stopImmediatePropagation();
+
+            if (
+                !Array.isArray(cart) ||
+                cart.length === 0
+            ) {
+                if (
+                    typeof showOfficialPopup ===
+                    "function"
+                ) {
+                    showOfficialPopup(
+                        "Cart is Empty",
+                        "Please add products before placing an order."
+                    );
+                }
+
+                return;
+            }
+
+            BQOrderAddressPopup();
+        },
+        true
+    );
+
+})();
+/* =========================================================
+   BHARAPUR QUICK - FULL CHECKOUT + PAYMENT + CANCELLATION
+   ========================================================= */
+
+(function () {
+    "use strict";
+
+    function BQ(id) {
+        return document.getElementById(id);
+    }
+
+    function esc(value) {
+        return String(value || "")
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+    }
+
+    function closeCheckout() {
+        const old = BQ("bqCheckoutPopup");
+        if (old) old.remove();
+    }
+
+    function deliveryCharge(subtotal) {
+        if (subtotal < 60) return 5;
+        if (subtotal < 100) return 7;
+        return 10;
+    }
+
+    /* =====================================================
+       MAIN CHECKOUT POPUP
+       ===================================================== */
+
+    function openCheckout() {
+
+        if (!Array.isArray(cart) || cart.length === 0) {
+            alert("Your cart is empty.");
+            return;
+        }
+
+        closeCheckout();
+
+        const popup = document.createElement("div");
+
+        popup.id = "bqCheckoutPopup";
+
+        popup.style.cssText = `
+            position:fixed;
+            inset:0;
+            z-index:999999;
+            background:rgba(0,0,0,.60);
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            padding:15px;
+            box-sizing:border-box;
+        `;
+
+        popup.innerHTML = `
+            <div style="
+                width:100%;
+                max-width:450px;
+                max-height:94vh;
+                overflow:auto;
+                background:#fff;
+                border-radius:22px;
+                padding:20px;
+                box-sizing:border-box;
+                box-shadow:0 20px 70px rgba(0,0,0,.35);
+            ">
+
+                <div style="
+                    display:flex;
+                    justify-content:space-between;
+                    align-items:center;
+                    margin-bottom:18px;
+                ">
+                    <h2 style="margin:0;">
+                        🛒 Checkout
+                    </h2>
+
+                    <button
+                        id="bqCheckoutCancel"
+                        type="button"
+                        style="
+                            border:0;
+                            background:#f1f1f1;
+                            width:38px;
+                            height:38px;
+                            border-radius:50%;
+                            font-size:20px;
+                        "
+                    >
+                        ×
+                    </button>
+                </div>
+
+
+                <!-- =========================
+                     SECTION 1
+                     PERSONAL DETAILS
+                     ========================= -->
+
+                <div style="
+                    border:1px solid #e5e5e5;
+                    border-radius:16px;
+                    padding:16px;
+                    margin-bottom:14px;
+                ">
+
+                    <h3 style="margin:0 0 14px;">
+                        1️⃣ Personal Details
+                    </h3>
+
+                    <label style="
+                        display:block;
+                        font-weight:700;
+                        margin-bottom:6px;
+                    ">
+                        Full Name
+                    </label>
+
+                    <input
+                        id="bqName"
+                        type="text"
+                        placeholder="Enter your full name"
+                        style="
+                            width:100%;
+                            box-sizing:border-box;
+                            padding:13px;
+                            border:1px solid #ddd;
+                            border-radius:11px;
+                            font-size:16px;
+                            margin-bottom:14px;
+                        "
+                    >
+
+                    <label style="
+                        display:block;
+                        font-weight:700;
+                        margin-bottom:6px;
+                    ">
+                        Sub-address / Town
+                    </label>
+
+                    <input
+                        id="bqTown"
+                        type="text"
+                        placeholder="Town / village / locality"
+                        style="
+                            width:100%;
+                            box-sizing:border-box;
+                            padding:13px;
+                            border:1px solid #ddd;
+                            border-radius:11px;
+                            font-size:16px;
+                        "
+                    >
+
+                </div>
+
+
+                <!-- =========================
+                     SECTION 2
+                     FULL ADDRESS
+                     ========================= -->
+
+                <div style="
+                    border:1px solid #e5e5e5;
+                    border-radius:16px;
+                    padding:16px;
+                    margin-bottom:14px;
+                ">
+
+                    <h3 style="margin:0 0 14px;">
+                        2️⃣ Delivery Address
+                    </h3>
+
+                    <label style="
+                        display:block;
+                        font-weight:700;
+                        margin-bottom:6px;
+                    ">
+                        Street / Road
+                    </label>
+
+                    <input
+                        id="bqStreet"
+                        type="text"
+                        placeholder="Street or road name"
+                        style="
+                            width:100%;
+                            box-sizing:border-box;
+                            padding:13px;
+                            border:1px solid #ddd;
+                            border-radius:11px;
+                            font-size:16px;
+                            margin-bottom:14px;
+                        "
+                    >
+
+                    <label style="
+                        display:block;
+                        font-weight:700;
+                        margin-bottom:6px;
+                    ">
+                        Area / Locality
+                    </label>
+
+                    <input
+                        id="bqArea"
+                        type="text"
+                        placeholder="Area / colony / mohalla"
+                        style="
+                            width:100%;
+                            box-sizing:border-box;
+                            padding:13px;
+                            border:1px solid #ddd;
+                            border-radius:11px;
+                            font-size:16px;
+                        "
+                    >
+
+                </div>
+
+
+                <!-- =========================
+                     SECTION 3
+                     PAYMENT
+                     ========================= -->
+
+                <div style="
+                    border:1px solid #e5e5e5;
+                    border-radius:16px;
+                    padding:16px;
+                    margin-bottom:14px;
+                ">
+
+                    <h3 style="margin:0 0 14px;">
+                        3️⃣ Payment Method
+                    </h3>
+
+                    <label style="
+                        display:flex;
+                        align-items:center;
+                        gap:10px;
+                        padding:14px;
+                        border:1px solid #ddd;
+                        border-radius:12px;
+                        margin-bottom:10px;
+                        cursor:pointer;
+                    ">
+
+                        <input
+                            type="radio"
+                            name="bqPayment"
+                            value="Cash on Delivery"
+                            checked
+                        >
+
+                        <span>
+                            💵 <strong>Cash on Delivery</strong>
+                            <br>
+                            <small style="color:#777;">
+                                Pay when your order arrives
+                            </small>
+                        </span>
+
+                    </label>
+
+
+                    <label style="
+                        display:flex;
+                        align-items:center;
+                        gap:10px;
+                        padding:14px;
+                        border:1px solid #ddd;
+                        border-radius:12px;
+                        cursor:pointer;
+                    ">
+
+                        <input
+                            type="radio"
+                            name="bqPayment"
+                            value="Online Payment"
+                        >
+
+                        <span>
+                            💳 <strong>Online Payment</strong>
+                            <br>
+                            <small style="color:#777;">
+                                Pay online
+                            </small>
+                        </span>
+
+                    </label>
+
+                </div>
+
+
+                <button
+                    id="bqReviewOrder"
+                    type="button"
+                    style="
+                        width:100%;
+                        padding:15px;
+                        border:0;
+                        border-radius:13px;
+                        background:#111;
+                        color:#fff;
+                        font-size:17px;
+                        font-weight:700;
+                    "
+                >
+                    Proceed to Order Review
+                </button>
+
+
+                <button
+                    id="bqCancelCheckout"
+                    type="button"
+                    style="
+                        width:100%;
+                        margin-top:10px;
+                        padding:13px;
+                        border:0;
+                        border-radius:13px;
+                        background:#f1f1f1;
+                        color:#333;
+                        font-size:15px;
+                        font-weight:700;
+                    "
+                >
+                    Cancel Checkout
+                </button>
+
+            </div>
+        `;
+
+        document.body.appendChild(popup);
+
+
+        BQ("bqCheckoutCancel").onclick =
+        BQ("bqCancelCheckout").onclick =
+            function () {
+                closeCheckout();
+            };
+
+
+        BQ("bqReviewOrder").addEventListener(
+            "click",
+            function () {
+
+                const name =
+                    BQ("bqName").value.trim();
+
+                const town =
+                    BQ("bqTown").value.trim();
+
+                const street =
+                    BQ("bqStreet").value.trim();
+
+                const area =
+                    BQ("bqArea").value.trim();
+
+                const payment =
+                    document.querySelector(
+                        'input[name="bqPayment"]:checked'
+                    );
+
+                if (!name) {
+                    alert("Please enter your full name.");
+                    return;
+                }
+
+                if (!town) {
+                    alert("Please enter your town or sub-address.");
+                    return;
+                }
+
+                if (!street) {
+                    alert("Please enter your street or road.");
+                    return;
+                }
+
+                if (!area) {
+                    alert("Please enter your area or locality.");
+                    return;
+                }
+
+                if (!payment) {
+                    alert("Please select a payment method.");
+                    return;
+                }
+
+                const customer = {
+                    name: name,
+                    town: town,
+                    street: street,
+                    area: area,
+                    payment: payment.value
+                };
+
+                showOrderReview(customer);
+            }
+        );
+    }
+
+
+    /* =====================================================
+       ORDER REVIEW
+       ===================================================== */
+
+    function showOrderReview(customer) {
+
+        closeCheckout();
+
+        let subtotal = 0;
+        let itemsHTML = "";
+
+        cart.forEach(function (item) {
+
+            const quantity =
+                Number(item.quantity) || 1;
+
+            const price =
+                Number(item.price) || 0;
+
+            const itemTotal =
+                price * quantity;
+
+            subtotal += itemTotal;
+
+            itemsHTML += `
+                <div style="
+                    display:flex;
+                    justify-content:space-between;
+                    gap:10px;
+                    padding:8px 0;
+                    border-bottom:1px solid #eee;
+                ">
+                    <span>
+                        ${esc(item.name)}
+                        × ${quantity}
+                    </span>
+
+                    <strong>
+                        ₹${itemTotal}
+                    </strong>
+                </div>
+            `;
+        });
+
+        const delivery =
+            deliveryCharge(subtotal);
+
+        const total =
+            subtotal + delivery;
+
+
+        const popup = document.createElement("div");
+
+        popup.id = "bqCheckoutPopup";
+
+        popup.style.cssText = `
+            position:fixed;
+            inset:0;
+            z-index:999999;
+            background:rgba(0,0,0,.60);
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            padding:15px;
+            box-sizing:border-box;
+        `;
+
+        popup.innerHTML = `
+            <div style="
+                width:100%;
+                max-width:450px;
+                max-height:94vh;
+                overflow:auto;
+                background:#fff;
+                border-radius:22px;
+                padding:20px;
+                box-sizing:border-box;
+                box-shadow:0 20px 70px rgba(0,0,0,.35);
+            ">
+
+                <h2 style="margin:0 0 18px;">
+                    🧾 Order Review
+                </h2>
+
+
+                <div style="
+                    background:#f7f7f7;
+                    border-radius:15px;
+                    padding:14px;
+                    margin-bottom:15px;
+                    line-height:1.6;
+                ">
+
+                    <strong>📍 Delivery Details</strong>
+
+                    <br>
+                    👤 ${esc(customer.name)}
+
+                    <br>
+                    🏘️ ${esc(customer.town)}
+
+                    <br>
+                    🛣️ ${esc(customer.street)}
+
+                    <br>
+                    📍 ${esc(customer.area)}
+
+                </div>
+
+
+                <h3 style="margin:0 0 8px;">
+                    Items
+                </h3>
+
+                ${itemsHTML}
+
+
+                <div style="
+                    margin-top:15px;
+                    line-height:1.7;
+                ">
+
+                    <div style="
+                        display:flex;
+                        justify-content:space-between;
+                    ">
+                        <span>Subtotal</span>
+                        <strong>₹${subtotal}</strong>
+                    </div>
+
+                    <div style="
+                        display:flex;
+                        justify-content:space-between;
+                    ">
+                        <span>Delivery Charge</span>
+                        <strong>₹${delivery}</strong>
+                    </div>
+
+                    <div style="
+                        display:flex;
+                        justify-content:space-between;
+                        font-size:21px;
+                        margin-top:8px;
+                    ">
+                        <strong>Total</strong>
+                        <strong>₹${total}</strong>
+                    </div>
+
+                </div>
+
+
+                <div style="
+                    margin-top:15px;
+                    padding:12px;
+                    border-radius:12px;
+                    background:#eef7ff;
+                ">
+                    <strong>Payment:</strong>
+                    ${esc(customer.payment)}
+                </div>
+
+
+                <button
+                    id="bqConfirmOrder"
+                    type="button"
+                    style="
+                        width:100%;
+                        margin-top:18px;
+                        padding:15px;
+                        border:0;
+                        border-radius:13px;
+                        background:#111;
+                        color:#fff;
+                        font-size:17px;
+                        font-weight:700;
+                    "
+                >
+                    Confirm & Place Order
+                </button>
+
+
+                <button
+                    id="bqBackCheckout"
+                    type="button"
+                    style="
+                        width:100%;
+                        margin-top:10px;
+                        padding:13px;
+                        border:0;
+                        border-radius:13px;
+                        background:#f1f1f1;
+                        color:#333;
+                        font-size:15px;
+                        font-weight:700;
+                    "
+                >
+                    ← Edit Details
+                </button>
+
+
+                <button
+                    id="bqCancelFinal"
+                    type="button"
+                    style="
+                        width:100%;
+                        margin-top:8px;
+                        padding:13px;
+                        border:0;
+                        border-radius:13px;
+                        background:#ffecec;
+                        color:#c62828;
+                        font-size:15px;
+                        font-weight:700;
+                    "
+                >
+                    ❌ Cancel Order
+                </button>
+
+            </div>
+        `;
+
+        document.body.appendChild(popup);
+
+
+        BQ("bqBackCheckout").onclick =
+            function () {
+                openCheckout();
+            };
+
+
+        BQ("bqCancelFinal").onclick =
+            function () {
+                closeCheckout();
+            };
+
+
+        BQ("bqConfirmOrder").addEventListener(
+            "click",
+            function () {
+
+                if (
+                    customer.payment ===
+                    "Online Payment"
+                ) {
+
+                    alert(
+                        "Online payment gateway is not connected yet. Please choose Cash on Delivery for now."
+                    );
+
+                    return;
+                }
+
+                placeOrder(
+                    customer,
+                    subtotal,
+                    delivery,
+                    total
+                );
+            }
+        );
+    }
+
+
+    /* =====================================================
+       PLACE ORDER
+       ===================================================== */
+
+    function placeOrder(
+        customer,
+        subtotal,
+        delivery,
+        total
+    ) {
+
+        const order = {
+
+            id:
+                "BQ-" + Date.now(),
+
+            customerName:
+                customer.name,
+
+            town:
+                customer.town,
+
+            street:
+                customer.street,
+
+            area:
+                customer.area,
+
+            items:
+                JSON.parse(
+                    JSON.stringify(cart)
+                ),
+
+            subtotal:
+                subtotal,
+
+            deliveryCharge:
+                delivery,
+
+            total:
+                total,
+
+            paymentMethod:
+                customer.payment,
+
+            paymentStatus:
+                "Pending",
+
+            status:
+                "Confirmed",
+
+            date:
+                new Date().toLocaleString()
+        };
+
+
+        if (!Array.isArray(orders)) {
+            orders = [];
+        }
+
+
+        orders.unshift(order);
+
+
+        localStorage.setItem(
+            "bharapurOrders",
+            JSON.stringify(orders)
+        );
+
+
+        cart = [];
+
+
+        localStorage.setItem(
+            "bharapurCart",
+            JSON.stringify(cart)
+        );
+
+
+        if (
+            typeof renderCart ===
+            "function"
+        ) {
+            renderCart();
+        }
+
+
+        if (
+            typeof updateCartCount ===
+            "function"
+        ) {
+            updateCartCount();
+        }
+
+
+        if (
+            typeof renderOrders ===
+            "function"
+        ) {
+            renderOrders();
+        }
+
+
+        if (
+            typeof closeCart ===
+            "function"
+        ) {
+            closeCart();
+        }
+
+
+        closeCheckout();
+
+
+        if (
+            typeof showOfficialPopup ===
+            "function"
+        ) {
+
+            showOfficialPopup(
+                "Order Confirmed 🎉",
+                "Your order " +
+                order.id +
+                " has been placed successfully. Total: ₹" +
+                total +
+                "."
+            );
+
+        } else {
+
+            alert(
+                "Order placed successfully!"
+            );
+        }
+    }
+
+
+    /* =====================================================
+       CANCEL EXISTING ORDER
+       ===================================================== */
+
+    window.bqCancelOrder = function (orderId) {
+
+        if (
+            !Array.isArray(orders)
+        ) {
+            return;
+        }
+
+        const order =
+            orders.find(function (item) {
+                return item.id === orderId;
+            });
+
+        if (!order) return;
+
+        if (
+            order.status === "Cancelled"
+        ) {
+            return;
+        }
+
+        const shouldCancel =
+            confirm(
+                "Cancel order " +
+                orderId +
+                "?"
+            );
+
+        if (!shouldCancel) {
+            return;
+        }
+
+        order.status = "Cancelled";
+
+        order.cancelledAt =
+            new Date().toLocaleString();
+
+        localStorage.setItem(
+            "bharapurOrders",
+            JSON.stringify(orders)
+        );
+
+        if (
+            typeof renderOrders ===
+            "function"
+        ) {
+            renderOrders();
+        }
+
+        alert(
+            "Order " +
+            orderId +
+            " has been cancelled."
+        );
+    };
+
+
+    /* =====================================================
+       PLACE ORDER BUTTON
+       ===================================================== */
+
+    document.addEventListener(
+        "click",
+        function (event) {
+
+            const button =
+                event.target.closest(
+                    "#checkoutButton"
+                );
+
+            if (!button) return;
+
+            event.preventDefault();
+            event.stopImmediatePropagation();
+
+            openCheckout();
+
+        },
+        true
+    );
+
+})();
