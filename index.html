@@ -293,8 +293,13 @@
             </div>
 
             <div class="owner-info">
-                <strong>Owner Management</strong>
-                <small>Manage products & store</small>
+                <strong>
+                    Owner Management
+                </strong>
+
+                <small>
+                    Manage products & store
+                </small>
             </div>
 
             <span class="owner-arrow">
@@ -342,7 +347,9 @@
             class="cart-empty"
         >
 
-            <div>🛒</div>
+            <div>
+                🛒
+            </div>
 
             <h3>
                 Your cart is empty
@@ -370,11 +377,12 @@
             </div>
 
 
+            <!-- PLACE ORDER BUTTON -->
+
             <button
                 id="checkoutButton"
                 class="checkout-button"
                 type="button"
-                disabled
             >
                 Place order
             </button>
@@ -382,6 +390,13 @@
         </div>
 
     </aside>
+
+
+    <!-- CHECKOUT POPUP CONTAINER -->
+
+    <div
+        id="bqCheckoutContainer"
+    ></div>
 
 
     <!-- DARK OVERLAY -->
@@ -393,7 +408,7 @@
 
 
     <!-- =========================
-         ORDER POPUP
+         ORDER TOAST
     ========================== -->
 
     <button
@@ -436,8 +451,15 @@
             data-page="homePage"
             type="button"
         >
-            <span>🏠</span>
-            <small>Home</small>
+
+            <span>
+                🏠
+            </span>
+
+            <small>
+                Home
+            </small>
+
         </button>
 
 
@@ -446,8 +468,15 @@
             data-page="menuPage"
             type="button"
         >
-            <span>☰</span>
-            <small>Menu</small>
+
+            <span>
+                ☰
+            </span>
+
+            <small>
+                Menu
+            </small>
+
         </button>
 
 
@@ -456,8 +485,15 @@
             data-page="ordersPage"
             type="button"
         >
-            <span>📦</span>
-            <small>Orders</small>
+
+            <span>
+                📦
+            </span>
+
+            <small>
+                Orders
+            </small>
+
         </button>
 
 
@@ -466,8 +502,15 @@
             data-page="wishlistPage"
             type="button"
         >
-            <span>♡</span>
-            <small>Wishlist</small>
+
+            <span>
+                ♡
+            </span>
+
+            <small>
+                Wishlist
+            </small>
+
         </button>
 
 
@@ -476,14 +519,18 @@
             data-page="accountPage"
             type="button"
         >
-            <span>👤</span>
-            <small>Account</small>
+
+            <span>
+                👤
+            </span>
+
+            <small>
+                Account
+            </small>
+
         </button>
 
     </nav>
-
-
-    <script src="script.js"></script>
 
 
     <!-- =========================
@@ -557,7 +604,9 @@
                 Your Products
             </h3>
 
-            <div id="adminProductList"></div>
+            <div
+                id="adminProductList"
+            ></div>
 
         </div>
 
@@ -626,7 +675,6 @@
 
     <!-- =========================
          OFFICIAL SUCCESS POPUP
-         ONLY ONE INSTANCE
     ========================== -->
 
     <div
@@ -660,6 +708,10 @@
 
     </div>
 
+
+    <!-- JAVASCRIPT -->
+
+    <script src="script.js"></script>
 
 </body>
 
