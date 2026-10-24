@@ -1,6 +1,6 @@
 /* ================================
    BHARAPUR QUICK - MAIN STYLES
-
+   ================================ */
 
 * {
     box-sizing: border-box;
@@ -700,7 +700,6 @@ body {
 
 /* ================================
    ORDER TOAST
-   HIDDEN BY DEFAULT
    ================================ */
 
 .order-toast {
@@ -726,9 +725,6 @@ body {
     cursor: pointer;
     text-align: left;
 
-    /* IMPORTANT:
-       Hidden until JavaScript adds .show
-    */
     opacity: 0;
     visibility: hidden;
     pointer-events: none;
@@ -1028,219 +1024,229 @@ button {
     .page-content {
         padding-top: 25px;
     }
-}  
-/* ADMIN PRODUCT MANAGER */
+}
+
+/* ================================
+   ADMIN PRODUCT MANAGER
+   ================================ */
 
 .admin-header {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 18px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 18px;
 }
 
 .admin-header button {
-  border: none;
-  background: #f1f1f1;
-  padding: 10px 14px;
-  border-radius: 12px;
-  font-size: 16px;
+    border: none;
+    background: #f1f1f1;
+    padding: 10px 14px;
+    border-radius: 12px;
+    font-size: 16px;
 }
 
 .admin-box {
-  background: white;
-  padding: 18px;
-  border-radius: 18px;
-  margin-bottom: 18px;
-  box-shadow: 0 5px 12px rgba(0,0,0,0.08);
+    background: white;
+    padding: 18px;
+    border-radius: 18px;
+    margin-bottom: 18px;
+    box-shadow: 0 5px 12px rgba(0, 0, 0, 0.08);
 }
 
 .admin-box h3 {
-  margin-top: 0;
+    margin-top: 0;
 }
 
 .admin-box input {
-  width: 100%;
-  box-sizing: border-box;
-  padding: 13px;
-  margin-bottom: 10px;
-  border: 1px solid #ddd;
-  border-radius: 12px;
-  font-size: 15px;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 13px;
+    margin-bottom: 10px;
+    border: 1px solid #ddd;
+    border-radius: 12px;
+    font-size: 15px;
 }
 
 #addProductButton {
-  width: 100%;
-  border: none;
-  padding: 14px;
-  border-radius: 13px;
-  background: #16a34a;
-  color: white;
-  font-size: 16px;
-  font-weight: bold;
+    width: 100%;
+    border: none;
+    padding: 14px;
+    border-radius: 13px;
+    background: #16a34a;
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
 }
 
 .admin-product {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 10px 0;
-  border-bottom: 1px solid #eee;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px solid #eee;
 }
 
 .admin-product img {
-  width: 55px;
-  height: 55px;
-  object-fit: contain;
-  border-radius: 10px;
+    width: 55px;
+    height: 55px;
+    object-fit: contain;
+    border-radius: 10px;
 }
 
 .delete-product {
-  margin-left: auto;
-  border: none;
-  background: #fee2e2;
-  color: #dc2626;
-  padding: 8px 10px;
-  border-radius: 10px;
-}   
+    margin-left: auto;
+    border: none;
+    background: #fee2e2;
+    color: #dc2626;
+    padding: 8px 10px;
+    border-radius: 10px;
+}
+
 .owner-access-button {
-  width: 100%;
-  margin-top: 18px;
-  padding: 15px 16px;
-  border: 1px solid #e8e8e8;
-  border-radius: 18px;
-  background: #ffffff;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  box-shadow: 0 5px 18px rgba(0, 0, 0, 0.06);
-  cursor: pointer;
-  text-align: left;
+    width: 100%;
+    margin-top: 18px;
+    padding: 15px 16px;
+    border: 1px solid #e8e8e8;
+    border-radius: 18px;
+    background: #ffffff;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    box-shadow: 0 5px 18px rgba(0, 0, 0, 0.06);
+    cursor: pointer;
+    text-align: left;
 }
 
 .owner-icon {
-  width: 38px;
-  height: 38px;
-  border-radius: 12px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: #f5f5f5;
-  font-size: 16px;
+    width: 38px;
+    height: 38px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f5f5f5;
+    font-size: 16px;
 }
 
 .owner-info {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
 }
 
 .owner-info strong {
-  font-size: 14px;
-  font-weight: 700;
+    font-size: 14px;
+    font-weight: 700;
 }
 
 .owner-info small {
-  font-size: 11px;
-  opacity: 0.6;
+    font-size: 11px;
+    opacity: 0.6;
 }
 
 .owner-arrow {
-  font-size: 24px;
-  opacity: 0.45;
-}  
+    font-size: 24px;
+    opacity: 0.45;
+}
+
+/* ================================
+   OWNER LOGIN
+   ================================ */
+
 .owner-login-modal {
-  display: none;
-  position: fixed;
-  inset: 0;
-  z-index: 9999;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
-  background: rgba(0, 0, 0, 0.45);
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background: rgba(0, 0, 0, 0.45);
 }
 
 .owner-login-modal.show {
-  display: flex;
+    display: flex;
 }
 
 .owner-login-card {
-  width: min(100%, 360px);
-  padding: 26px;
-  border-radius: 24px;
-  background: #fff;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.18);
-  position: relative;
+    width: min(100%, 360px);
+    padding: 26px;
+    border-radius: 24px;
+    background: #fff;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.18);
+    position: relative;
 }
 
 .owner-login-close {
-  position: absolute;
-  top: 12px;
-  right: 14px;
-  border: 0;
-  background: transparent;
-  font-size: 26px;
-  cursor: pointer;
+    position: absolute;
+    top: 12px;
+    right: 14px;
+    border: 0;
+    background: transparent;
+    font-size: 26px;
+    cursor: pointer;
 }
 
 .owner-login-icon {
-  width: 46px;
-  height: 46px;
-  border-radius: 14px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: #f5f5f5;
-  margin-bottom: 16px;
+    width: 46px;
+    height: 46px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f5f5f5;
+    margin-bottom: 16px;
 }
 
 .owner-login-card h2 {
-  margin: 0 0 6px;
+    margin: 0 0 6px;
 }
 
 .owner-login-card p {
-  margin: 0 0 20px;
-  opacity: 0.6;
+    margin: 0 0 20px;
+    opacity: 0.6;
 }
 
 .owner-login-card label {
-  display: block;
-  margin-bottom: 7px;
-  font-size: 13px;
-  font-weight: 600;
+    display: block;
+    margin-bottom: 7px;
+    font-size: 13px;
+    font-weight: 600;
 }
 
 .owner-login-card input {
-  width: 100%;
-  box-sizing: border-box;
-  padding: 13px;
-  border: 1px solid #ddd;
-  border-radius: 13px;
-  outline: none;
-  margin-bottom: 14px;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 13px;
+    border: 1px solid #ddd;
+    border-radius: 13px;
+    outline: none;
+    margin-bottom: 14px;
 }
 
 .owner-login-button {
-  width: 100%;
-  padding: 13px;
-  border: 0;
-  border-radius: 13px;
-  background: #111;
-  color: #fff;
-  font-weight: 700;
-  cursor: pointer;
+    width: 100%;
+    padding: 13px;
+    border: 0;
+    border-radius: 13px;
+    background: #111;
+    color: #fff;
+    font-weight: 700;
+    cursor: pointer;
 }
 
 .owner-login-error {
-  min-height: 18px;
-  margin-top: 10px !important;
-  margin-bottom: 0 !important;
-  font-size: 12px;
-  opacity: 1 !important;
+    min-height: 18px;
+    margin-top: 10px !important;
+    margin-bottom: 0 !important;
+    font-size: 12px;
+    opacity: 1 !important;
 }
+
 /* =========================================
    PREMIUM PRODUCT DETAILS
-========================================= */
+   ========================================= */
 
 .product-detail-overlay {
     position: fixed;
@@ -1473,4 +1479,652 @@ button {
         opacity: 1;
         transform: translateY(0);
     }
+}
+
+/* =========================================
+   OFFICIAL SUCCESS POPUP
+   ========================================= */
+
+.bq-success-overlay {
+    position: fixed;
+    inset: 0;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background: rgba(0, 0, 0, 0.55);
+    z-index: 99999;
+}
+
+.bq-success-overlay.show {
+    display: flex;
+}
+
+.bq-success-card {
+    width: min(92%, 380px);
+    padding: 28px 22px;
+    border-radius: 22px;
+    background: #ffffff;
+    text-align: center;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+    animation: bqPopupIn 0.2s ease;
+}
+
+.bq-success-icon {
+    width: 64px;
+    height: 64px;
+    margin: 0 auto 14px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 32px;
+    font-weight: 800;
+    background: #e8f7ee;
+    color: #198754;
+}
+
+.bq-success-card h3 {
+    margin: 0 0 8px;
+    font-size: 22px;
+}
+
+.bq-success-card p {
+    margin: 0 0 20px;
+    color: #666;
+    line-height: 1.5;
+}
+
+.bq-success-button {
+    width: 100%;
+    border: 0;
+    border-radius: 12px;
+    padding: 13px 18px;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    background: #111111;
+    color: #ffffff;
+}
+
+@keyframes bqPopupIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px) scale(0.97);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+/* ==========================================
+   BHARAPUR QUICK - VALIDATION POPUP
+   ========================================== */
+
+.bq-message-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.55);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    z-index: 999999;
+    animation: bqPopupFadeIn 0.2s ease;
+}
+
+.bq-message-box {
+    width: min(380px, 100%);
+    background: #ffffff;
+    border-radius: 24px;
+    padding: 28px 22px 22px;
+    text-align: center;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+    animation: bqPopupScale 0.22s ease;
+}
+
+.bq-message-icon {
+    width: 64px;
+    height: 64px;
+    margin: 0 auto 14px;
+    border-radius: 50%;
+    background: #fff3cd;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 30px;
+}
+
+.bq-message-box h3 {
+    margin: 0 0 8px;
+    font-size: 21px;
+    font-weight: 800;
+}
+
+.bq-message-box p {
+    margin: 0 0 22px;
+    font-size: 15px;
+    line-height: 1.5;
+    color: #666;
+}
+
+.bq-message-ok {
+    width: 100%;
+    border: none;
+    border-radius: 14px;
+    padding: 13px 18px;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    background: #111;
+    color: #fff;
+}
+
+.bq-message-ok:active {
+    transform: scale(0.98);
+}
+
+@keyframes bqPopupFadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes bqPopupScale {
+    from {
+        opacity: 0;
+        transform: scale(0.92);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+/* Order Cancel Button */
+.bq-order-cancel-btn {
+    width: 100%;
+    margin-top: 14px;
+    padding: 12px 16px;
+    border: none;
+    border-radius: 12px;
+    background: #fff0f0;
+    color: #d32f2f;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.bq-order-cancel-btn:active {
+    transform: scale(0.98);
+}
+
+.bq-order-cancelled {
+    margin-top: 14px;
+    padding: 12px;
+    border-radius: 12px;
+    background: #f1f1f1;
+    color: #777;
+    text-align: center;
+    font-weight: 700;
+    font-size: 14px;
+}/* ==========================================
+   BEAUTIFUL VALIDATION POPUP
+   ========================================== */
+
+.bq-message-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.55);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    z-index: 999999;
+}
+
+.bq-message-box {
+    width: min(380px, 100%);
+    background: white;
+    border-radius: 24px;
+    padding: 28px 22px 22px;
+    text-align: center;
+    box-shadow: 0 20px 60px rgba(0,0,0,.25);
+}
+
+.bq-message-icon {
+    font-size: 32px;
+    margin-bottom: 10px;
+}
+
+.bq-message-box h3 {
+    margin: 0 0 8px;
+    font-size: 21px;
+}
+
+.bq-message-box p {
+    margin: 0 0 20px;
+    color: #666;
+    line-height: 1.5;
+}
+
+.bq-message-ok {
+    width: 100%;
+    border: none;
+    border-radius: 14px;
+    padding: 13px;
+    background: #111;
+    color: white;
+    font-size: 16px;
+    font-weight: 700;
+}/* =========================================================
+   BHARAPUR QUICK - MANAGER + OWNER ACCESS
+   ========================================================= */
+
+
+
+#bqOwnerAccessButton:active {
+    transform: scale(.97);
+}
+
+
+.bq-owner-overlay {
+    position: fixed;
+    inset: 0;
+
+    background: rgba(0,0,0,.62);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 20px;
+
+    z-index: 999999;
+}
+
+
+.bq-owner-box {
+    width: min(390px, 100%);
+
+    background: #fff;
+
+    border-radius: 26px;
+
+    padding: 28px 22px 22px;
+
+    text-align: center;
+
+    box-shadow:
+        0 25px 70px rgba(0,0,0,.30);
+}
+
+
+.bq-owner-icon {
+    font-size: 38px;
+    margin-bottom: 10px;
+}
+
+
+.bq-owner-box h2 {
+    margin: 0 0 8px;
+
+    font-size: 22px;
+    color: #111;
+}
+
+
+.bq-owner-subtitle {
+    margin: 0 0 20px;
+
+    color: #777;
+    line-height: 1.5;
+}
+
+
+.bq-owner-input {
+    width: 100%;
+
+    box-sizing: border-box;
+
+    padding: 14px 15px;
+
+    border: 1px solid #ddd;
+    border-radius: 14px;
+
+    outline: none;
+
+    font-size: 16px;
+
+    margin-bottom: 12px;
+}
+
+
+.bq-owner-input:focus {
+    border-color: #111;
+}
+
+
+.bq-owner-primary {
+    width: 100%;
+
+    border: none;
+    border-radius: 14px;
+
+    padding: 14px;
+
+    background: #111;
+    color: #fff;
+
+    font-size: 15px;
+    font-weight: 700;
+
+    cursor: pointer;
+}
+
+
+.bq-owner-secondary {
+    width: 100%;
+
+    margin-top: 10px;
+
+    border: none;
+    border-radius: 14px;
+
+    padding: 13px;
+
+    background: #eee;
+    color: #333;
+
+    font-size: 15px;
+    font-weight: 700;
+
+    cursor: pointer;
+}
+
+
+.bq-owner-error {
+    margin-top: 14px;
+
+    padding: 10px;
+
+    border-radius: 12px;
+
+    background: #fff0f0;
+    color: #d32f2f;
+
+    font-size: 14px;
+    font-weight: 600;
+}/* =========================================================
+   OWNER / MANAGER ORDERS PANEL
+   ========================================================= */
+
+.bq-dealer-open-button {
+    position: fixed;
+    left: 50%;
+    bottom: 82px;
+    transform: translateX(-50%);
+    z-index: 9990;
+
+    width: calc(100% - 32px);
+    max-width: 420px;
+
+    padding: 14px;
+
+    border: none;
+    border-radius: 16px;
+
+    background: #111;
+    color: #fff;
+
+    font-size: 15px;
+    font-weight: 700;
+
+    box-shadow: 0 10px 30px rgba(0,0,0,.2);
+}
+
+
+.bq-dealer-overlay {
+    position: fixed;
+    inset: 0;
+
+    z-index: 999999;
+
+    background: rgba(0,0,0,.65);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 16px;
+}
+
+
+.bq-dealer-box {
+    width: min(480px, 100%);
+    max-height: 90vh;
+
+    overflow-y: auto;
+
+    background: #fff;
+
+    border-radius: 24px;
+
+    padding: 20px;
+
+    box-shadow: 0 25px 70px rgba(0,0,0,.3);
+}
+
+
+.bq-dealer-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    margin-bottom: 20px;
+}
+
+
+.bq-dealer-title {
+    font-size: 21px;
+    font-weight: 800;
+}
+
+
+.bq-dealer-subtitle {
+    color: #777;
+    font-size: 13px;
+    margin-top: 3px;
+}
+
+
+.bq-dealer-close {
+    width: 38px;
+    height: 38px;
+
+    border: none;
+    border-radius: 50%;
+
+    background: #eee;
+
+    font-size: 25px;
+}
+
+
+.bq-dealer-input {
+    width: 100%;
+    box-sizing: border-box;
+
+    padding: 14px;
+
+    border: 1px solid #ddd;
+    border-radius: 14px;
+
+    font-size: 16px;
+
+    margin-bottom: 12px;
+}
+
+
+.bq-dealer-primary {
+    width: 100%;
+
+    padding: 14px;
+
+    border: none;
+    border-radius: 14px;
+
+    background: #111;
+    color: #fff;
+
+    font-size: 15px;
+    font-weight: 700;
+}
+
+
+.bq-dealer-error {
+    margin-top: 12px;
+
+    padding: 10px;
+
+    border-radius: 12px;
+
+    background: #fff0f0;
+    color: #d32f2f;
+
+    text-align: center;
+}
+
+
+.bq-orders-heading {
+    font-size: 19px;
+    font-weight: 800;
+
+    margin-bottom: 14px;
+}
+
+
+.bq-dealer-order-card {
+    padding: 16px;
+
+    margin-bottom: 14px;
+
+    border: 1px solid #eee;
+    border-radius: 18px;
+
+    background: #fff;
+
+    box-shadow: 0 5px 18px rgba(0,0,0,.06);
+}
+
+
+.bq-dealer-order-top {
+    display: flex;
+    justify-content: space-between;
+
+    gap: 10px;
+
+    padding-bottom: 12px;
+
+    border-bottom: 1px solid #eee;
+}
+
+
+.bq-dealer-order-top span {
+    font-size: 12px;
+    font-weight: 700;
+
+    padding: 5px 9px;
+
+    border-radius: 20px;
+
+    background: #eaf7ed;
+    color: #27833d;
+}
+
+
+.bq-dealer-customer {
+    padding: 13px 0;
+
+    line-height: 1.6;
+}
+
+
+.bq-dealer-items {
+    padding: 10px 0;
+
+    border-top: 1px solid #eee;
+    border-bottom: 1px solid #eee;
+}
+
+
+.bq-dealer-item {
+    display: flex;
+    justify-content: space-between;
+
+    padding: 5px 0;
+
+    font-size: 14px;
+}
+
+
+.bq-dealer-address {
+    padding: 13px 0;
+
+    line-height: 1.6;
+
+    font-size: 14px;
+}
+
+
+.bq-dealer-payment {
+    border-top: 1px solid #eee;
+
+    padding-top: 12px;
+
+    line-height: 1.7;
+
+    font-size: 14px;
+}
+
+
+.bq-dealer-total {
+    margin-top: 6px;
+
+    font-size: 18px;
+    font-weight: 800;
+}
+
+
+.bq-dealer-date {
+    margin-top: 12px;
+
+    color: #888;
+
+    font-size: 12px;
+}
+
+
+.bq-no-orders {
+    text-align: center;
+
+    padding: 40px 20px;
+
+    color: #777;
+}
+
+
+.bq-no-orders div {
+    font-size: 42px;
+}
+
+
+.bq-no-orders h3 {
+    color: #222;
+    margin-bottom: 5px;
 }
