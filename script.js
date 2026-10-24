@@ -1943,50 +1943,49 @@ function loadManagerProfileIntoForm() {
 }
 
 function saveManagerProfileFromForm() {
-    const name =
-        get("managerName");
+    const name = get("managerName");
+    const shop = get("managerShopName");
+    const type = get("managerStoreType");
+    const description = get("managerShopDescription");
 
-    const shop =
-        get("managerShopName");
+    const managerName = name
+        ? name.value.trim()
+        : "";
 
-    const type =
-        get("managerStoreType");
+    const shopName = shop
+        ? shop.value.trim()
+        : "";
 
-    const description =
-        get("managerShopDescription");
+    const storeType = type
+        ? type.value.trim()
+        : "";
+
+    const shopDescription = description
+        ? description.value.trim()
+        : "";
+
+    if (!managerName || !shopName || !storeType) {
+        showOfficialPopup(
+            "Missing Shop Details",
+            "Please enter your name, shop name and store type before saving."
+        );
+        return;
+    }
 
     managerProfile = {
-        name:
-            name
-                ? name.value.trim()
-                : "",
-
-        shopName:
-            shop
-                ? shop.value.trim()
-                : "",
-
-        storeType:
-            type
-                ? type.value.trim()
-                : "",
-
-        description:
-            description
-                ? description.value.trim()
-                : ""
+        name: managerName,
+        shopName: shopName,
+        storeType: storeType,
+        description: shopDescription
     };
 
     saveManagerProfile();
-
-  
-  showOfficialPopup(
-    "Shop Details Saved",
-    `"${managerProfile.shopName || "Your shop"}" details have been saved successfully.`
-);      
-  
-
     renderManagerProducts();
+
+    showOfficialPopup(
+        "Shop Details Saved",
+        `"${shopName}" details have been saved successfully.`
+    );
 }
 
 // ==========================================
@@ -3937,457 +3936,6 @@ renderWishlist = function() {
                         Number.isFinite(
                             productId
                         )
-                        /* =========================================================
-   BHARAPUR QUICK - FINAL MANAGER BUTTON FIX
-   Paste this at the VERY BOTTOM of script.js
-========================================================= */
-
-(function () {
-
-    function bqGet(id) {
-        return document.getElementById(id);
-    }
-
-
-    /* =====================================================
-       OFFICIAL POPUP
-    ===================================================== */
-
-    window.showOfficialPopup = function (title, message) {
-
-        const popup = bqGet("bqSuccessPopup");
-        const titleElement = bqGet("bqSuccessTitle");
-        const messageElement = bqGet("bqSuccessMessage");
-
-        if (!popup) {
-            console.error(
-                "Bharapur Quick: Success popup not found."
-            );
-            return;
-        }
-
-        if (titleElement) {
-            titleElement.textContent = title;
-        }
-
-        if (messageElement) {
-            messageElement.textContent = message;
-        }
-
-        popup.classList.add("show");
-    };
-
-
-    /* =====================================================
-       CLOSE SUCCESS POPUP
-    ===================================================== */
-
-    function setupBharapurSuccessPopup() {
-
-        const button = bqGet("bqSuccessButton");
-
-        if (!button) return;
-
-        const newButton = button.cloneNode(true);
-
-        button.replaceWith(newButton);
-
-        newButton.addEventListener("click", function () {
-
-            const popup = bqGet("bqSuccessPopup");
-
-            if (popup) {
-                popup.classList.remove("show");
-            }
-
-        });
-
-    }
-
-
-    /* =====================================================
-       SAVE SHOP DETAILS
-    ===================================================== */
-
-    window.saveManagerProfileFromForm = function () {
-
-        const nameInput =
-            bqGet("managerName");
-
-        const shopInput =
-            bqGet("managerShopName");
-
-        const typeInput =
-            bqGet("managerStoreType");
-
-        const descriptionInput =
-            bqGet("managerShopDescription");
-
-
-        const managerName =
-            nameInput
-                ? nameInput.value.trim()
-                : "";
-
-        const shopName =
-            shopInput
-                ? shopInput.value.trim()
-                : "";
-
-        const storeType =
-            typeInput
-                ? typeInput.value.trim()
-                : "";
-
-        const shopDescription =
-            descriptionInput
-                ? descriptionInput.value.trim()
-                : "";
-
-
-        /* REQUIRED FIELDS */
-
-        if (
-            !managerName ||
-            !shopName ||
-            !storeType
-        ) {
-
-            window.showOfficialPopup(
-                "Missing Shop Details",
-                "Please enter your name, shop name and store type before saving."
-            );
-
-            return;
-        }
-
-
-        /* SAVE PROFILE */
-
-        managerProfile = {
-
-            name: managerName,
-
-            shopName: shopName,
-
-            storeType: storeType,
-
-            description: shopDescription
-
-        };
-
-
-        saveManagerProfile();
-
-
-        /* REFRESH PRODUCTS */
-
-        if (
-            typeof renderManagerProducts ===
-            "function"
-        ) {
-            renderManagerProducts();
-        }
-
-
-        /* SUCCESS */
-
-        window.showOfficialPopup(
-            "Shop Details Saved",
-            '"' +
-            shopName +
-            '" details have been saved successfully.'
-        );
-
-    };
-
-
-    /* =====================================================
-       ADD PRODUCT
-    ===================================================== */
-
-    function setupAddProductButton() {
-
-        const oldButton =
-            bqGet("addProductButton");
-
-        if (!oldButton) return;
-
-
-        /*
-         Remove the old click listeners
-         so the old native alert does not run.
-        */
-
-        const button =
-            oldButton.cloneNode(true);
-
-        oldButton.replaceWith(button);
-
-
-        button.addEventListener(
-            "click",
-            function () {
-
-                const nameInput =
-                    bqGet("adminProductName");
-
-                const priceInput =
-                    bqGet("adminProductPrice");
-
-                const categoryInput =
-                    bqGet("adminProductCategory");
-
-                const imageInput =
-                    bqGet("adminProductImage");
-
-
-                const name =
-                    nameInput
-                        ? nameInput.value.trim()
-                        : "";
-
-                const price =
-                    priceInput
-                        ? priceInput.value.trim()
-                        : "";
-
-                const category =
-                    categoryInput
-                        ? categoryInput.value.trim()
-                        : "";
-
-                const image =
-                    imageInput
-                        ? imageInput.value.trim()
-                        : "";
-
-
-                /* VALIDATION */
-
-                if (
-                    !name ||
-                    !price ||
-                    !category
-                ) {
-
-                    window.showOfficialPopup(
-                        "Missing Product Details",
-                        "Please enter the product name, price and category."
-                    );
-
-                    return;
-                }
-
-
-                const numericPrice =
-                    Number(price);
-
-
-                if (
-                    !Number.isFinite(
-                        numericPrice
-                    ) ||
-                    numericPrice <= 0
-                ) {
-
-                    window.showOfficialPopup(
-                        "Invalid Price",
-                        "Please enter a valid product price greater than zero."
-                    );
-
-                    return;
-                }
-
-
-                /*
-                 Use the existing product system.
-                */
-
-                const newProduct = {
-
-                    id:
-                        Date.now(),
-
-                    name:
-                        name,
-
-                    price:
-                        numericPrice,
-
-                    category:
-                        category,
-
-                    image:
-                        image,
-
-                    emoji:
-                        "📦",
-
-                    ownerType:
-                        "manager",
-
-                    managerId:
-                        managerId
-
-                };
-
-
-                managerProducts.push(
-                    newProduct
-                );
-
-
-                saveManagerProducts();
-
-
-                /* CLEAR FORM */
-
-                if (nameInput) {
-                    nameInput.value = "";
-                }
-
-                if (priceInput) {
-                    priceInput.value = "";
-                }
-
-                if (categoryInput) {
-                    categoryInput.value = "";
-                }
-
-                if (imageInput) {
-                    imageInput.value = "";
-                }
-
-
-                /* REFRESH MANAGER LIST */
-
-                if (
-                    typeof renderManagerProducts ===
-                    "function"
-                ) {
-                    renderManagerProducts();
-                }
-
-
-                /* REFRESH HOME PRODUCTS */
-
-                if (
-                    typeof renderProducts ===
-                    "function"
-                ) {
-                    renderProducts();
-                }
-
-                if (
-                    typeof renderCategories ===
-                    "function"
-                ) {
-                    renderCategories();
-                }
-
-
-                /* SUCCESS */
-
-                window.showOfficialPopup(
-                    "Product Added",
-                    '"' +
-                    name +
-                    '" has been added successfully.'
-                );
-
-            }
-        );
-
-    }
-
-
-    /* =====================================================
-       SAVE SHOP BUTTON
-    ===================================================== */
-
-    function setupSaveShopButton() {
-
-        const oldButton =
-            bqGet("saveManagerProfileButton");
-
-        if (!oldButton) return;
-
-
-        /*
-         Remove old listeners.
-        */
-
-        const button =
-            oldButton.cloneNode(true);
-
-        oldButton.replaceWith(button);
-
-
-        button.addEventListener(
-            "click",
-            function () {
-
-                window.saveManagerProfileFromForm();
-
-            }
-        );
-
-    }
-
-
-    /* =====================================================
-       SET EVERYTHING UP
-    ===================================================== */
-
-    function setupBharapurManagerFix() {
-
-        setupBharapurSuccessPopup();
-
-        setupSaveShopButton();
-
-        setupAddProductButton();
-
-    }
-
-
-    /*
-     Run when page is ready.
-    */
-
-    if (
-        document.readyState ===
-        "loading"
-    ) {
-
-        document.addEventListener(
-            "DOMContentLoaded",
-            setupBharapurManagerFix
-        );
-
-    } else {
-
-        setupBharapurManagerFix();
-
-    }
-
-
-    /*
-     Manager page may be created dynamically.
-     Watch for it and reconnect the buttons.
-    */
-
-    const observer =
-        new MutationObserver(
-            function () {
-
-                const saveButton =
-                    bqGet(
-                        "saveManagerProfileButton"
-                    );
-
-                const addButton =
-                    bqGet(
                     ) {
 
                         openProductDetails(
@@ -4397,4 +3945,409 @@ renderWishlist = function() {
                 }
             );
         });
-};
+};    
+/* =========================================================
+   BHARAPUR QUICK - FINAL BUTTON FIX
+   Paste this whole block at the VERY BOTTOM of script.js
+   ========================================================= */
+
+(function () {
+    "use strict";
+
+    function BQget(id) {
+        return document.getElementById(id);
+    }
+
+    function BQpopup(title, message) {
+        const popup = BQget("bqSuccessPopup");
+        const titleEl = BQget("bqSuccessTitle");
+        const messageEl = BQget("bqSuccessMessage");
+        const button = BQget("bqSuccessButton");
+
+        if (!popup) {
+            console.error("Bharapur Quick: bqSuccessPopup not found.");
+            return;
+        }
+
+        if (titleEl) {
+            titleEl.textContent = title;
+        }
+
+        if (messageEl) {
+            messageEl.textContent = message;
+        }
+
+        popup.classList.add("show");
+        popup.style.display = "flex";
+
+        if (button) {
+            button.onclick = function () {
+                popup.classList.remove("show");
+                popup.style.display = "";
+            };
+        }
+    }
+
+
+    /* ---------------------------------------------------------
+       SAVE SHOP DETAILS
+       --------------------------------------------------------- */
+
+    window.saveManagerProfileFromForm = function () {
+        const name = BQget("managerName");
+        const shop = BQget("managerShopName");
+        const type = BQget("managerStoreType");
+        const description = BQget("managerShopDescription");
+
+        const managerName = name ? name.value.trim() : "";
+        const shopName = shop ? shop.value.trim() : "";
+        const storeType = type ? type.value.trim() : "";
+        const shopDescription = description
+            ? description.value.trim()
+            : "";
+
+        if (!managerName || !shopName || !storeType) {
+            BQpopup(
+                "Missing Shop Details",
+                "Please enter your name, shop name and store type before saving."
+            );
+            return;
+        }
+
+        /* Save shop information */
+        if (typeof managerProfile !== "undefined") {
+            managerProfile = {
+                name: managerName,
+                shopName: shopName,
+                storeType: storeType,
+                description: shopDescription
+            };
+
+            if (typeof saveManagerProfile === "function") {
+                saveManagerProfile();
+            }
+        } else {
+            localStorage.setItem(
+                "bharapurManagerProfile",
+                JSON.stringify({
+                    name: managerName,
+                    shopName: shopName,
+                    storeType: storeType,
+                    description: shopDescription
+                })
+            );
+        }
+
+        /* Refresh products if available */
+        if (typeof renderManagerProducts === "function") {
+            renderManagerProducts();
+        }
+
+        /* SUCCESS POPUP */
+        BQpopup(
+            "Shop Details Saved",
+            '"' + shopName + '" details have been saved successfully.'
+        );
+    };
+
+
+    /* ---------------------------------------------------------
+       CUSTOM PRODUCT VALIDATION
+       --------------------------------------------------------- */
+
+    window.addManagerProduct = function () {
+        const nameEl = BQget("managerProductName");
+        const priceEl = BQget("managerProductPrice");
+        const categoryEl = BQget("managerProductCategory");
+        const descriptionEl = BQget("managerProductDescription");
+
+        const name = nameEl ? nameEl.value.trim() : "";
+        const price = priceEl ? priceEl.value.trim() : "";
+        const category = categoryEl ? categoryEl.value.trim() : "";
+        const description = descriptionEl
+            ? descriptionEl.value.trim()
+            : "";
+
+        /* Missing details */
+        if (!name || !price || !category) {
+            BQpopup(
+                "Missing Product Details",
+                "Please enter the product name, price and category before adding it."
+            );
+            return;
+        }
+
+        /* Find existing product array */
+        if (typeof managerProducts === "undefined") {
+            window.managerProducts = [];
+        }
+
+        const product = {
+            id: Date.now(),
+            name: name,
+            price: Number(price),
+            category: category,
+            description: description
+        };
+
+        managerProducts.push(product);
+
+        /* Save products */
+        try {
+            localStorage.setItem(
+                "bharapurManagerProducts",
+                JSON.stringify(managerProducts)
+            );
+        } catch (error) {
+            console.error(
+                "Bharapur Quick: Could not save product.",
+                error
+            );
+        }
+
+        /* Refresh product list */
+        if (typeof renderManagerProducts === "function") {
+            renderManagerProducts();
+        }
+
+        /* Clear fields */
+        if (nameEl) nameEl.value = "";
+        if (priceEl) priceEl.value = "";
+        if (categoryEl) categoryEl.value = "";
+        if (descriptionEl) descriptionEl.value = "";
+
+        /* SUCCESS POPUP */
+        BQpopup(
+            "Product Added",
+            '"' + name + '" has been added to your shop successfully.'
+        );
+    };
+
+
+    /* ---------------------------------------------------------
+       MAKE POPUP FUNCTION AVAILABLE
+       --------------------------------------------------------- */
+
+    window.showOfficialPopup = BQpopup;
+
+
+    /* ---------------------------------------------------------
+       FORCE SAVE BUTTON TO USE NEW FUNCTION
+       --------------------------------------------------------- */
+
+    document.addEventListener("click", function (event) {
+
+        const button = event.target.closest("#saveManagerProfileButton");
+
+        if (button) {
+            event.preventDefault();
+            event.stopImmediatePropagation();
+
+            window.saveManagerProfileFromForm();
+        }
+
+    }, true);
+
+
+    /* ---------------------------------------------------------
+       FORCE ADD PRODUCT BUTTON TO USE NEW FUNCTION
+       --------------------------------------------------------- */
+
+    document.addEventListener("click", function (event) {
+
+        const button = event.target.closest(
+            "#addManagerProductButton"
+        );
+
+        if (button) {
+            event.preventDefault();
+            event.stopImmediatePropagation();
+
+            window.addManagerProduct();
+        }
+
+    }, true);
+
+
+    console.log(
+        "Bharapur Quick: Final button fix loaded successfully."
+    );
+
+})();
+/* BHARAPUR QUICK - BUTTON & POPUP FIX */
+
+(function () {
+    function getBQ(id) {
+        return document.getElementById(id);
+    }
+
+    window.showOfficialPopup = function (title, message) {
+        const popup = getBQ("bqSuccessPopup");
+        const titleEl = getBQ("bqSuccessTitle");
+        const messageEl = getBQ("bqSuccessMessage");
+
+        if (!popup) return;
+
+        if (titleEl) titleEl.textContent = title;
+        if (messageEl) messageEl.textContent = message;
+
+        popup.classList.add("show");
+    };
+
+    function setupPopup() {
+        const button = getBQ("bqSuccessButton");
+        if (!button || button.dataset.bqReady) return;
+
+        button.dataset.bqReady = "true";
+
+        button.addEventListener("click", function () {
+            const popup = getBQ("bqSuccessPopup");
+            if (popup) popup.classList.remove("show");
+        });
+    }
+
+    window.saveManagerProfileFromForm = function () {
+        const name = getBQ("managerName");
+        const shop = getBQ("managerShopName");
+        const type = getBQ("managerStoreType");
+        const description = getBQ("managerShopDescription");
+
+        const managerName = name ? name.value.trim() : "";
+        const shopName = shop ? shop.value.trim() : "";
+        const storeType = type ? type.value.trim() : "";
+        const shopDescription = description
+            ? description.value.trim()
+            : "";
+
+        if (!managerName || !shopName || !storeType) {
+            showOfficialPopup(
+                "Missing Shop Details",
+                "Please enter your name, shop name and store type before saving."
+            );
+            return;
+        }
+
+        managerProfile = {
+            name: managerName,
+            shopName: shopName,
+            storeType: storeType,
+            description: shopDescription
+        };
+
+        saveManagerProfile();
+
+        if (typeof renderManagerProducts === "function") {
+            renderManagerProducts();
+        }
+
+        showOfficialPopup(
+            "Shop Details Saved",
+            '"' + shopName + '" details have been saved successfully.'
+        );
+    };
+
+    function setupButtons() {
+        setupPopup();
+
+        const saveButton = getBQ("saveManagerProfileButton");
+
+        if (saveButton && !saveButton.dataset.bqReady) {
+            saveButton.dataset.bqReady = "true";
+
+            saveButton.addEventListener("click", function () {
+                window.saveManagerProfileFromForm();
+            });
+        }
+
+        const addButton = getBQ("addProductButton");
+
+        if (addButton && !addButton.dataset.bqReady) {
+            addButton.dataset.bqReady = "true";
+
+            addButton.addEventListener("click", function () {
+                const nameInput = getBQ("adminProductName");
+                const priceInput = getBQ("adminProductPrice");
+                const categoryInput = getBQ("adminProductCategory");
+                const imageInput = getBQ("adminProductImage");
+
+                const name = nameInput ? nameInput.value.trim() : "";
+                const price = priceInput ? priceInput.value.trim() : "";
+                const category = categoryInput
+                    ? categoryInput.value.trim()
+                    : "";
+                const image = imageInput ? imageInput.value.trim() : "";
+
+                if (!name || !price || !category) {
+                    showOfficialPopup(
+                        "Missing Product Details",
+                        "Please enter the product name, price and category."
+                    );
+                    return;
+                }
+
+                const numericPrice = Number(price);
+
+                if (!Number.isFinite(numericPrice) || numericPrice <= 0) {
+                    showOfficialPopup(
+                        "Invalid Price",
+                        "Please enter a valid price greater than zero."
+                    );
+                    return;
+                }
+
+                const product = {
+                    id: Date.now(),
+                    name: name,
+                    price: numericPrice,
+                    category: category,
+                    image: image,
+                    emoji: "📦",
+                    ownerType: "manager",
+                    managerId: managerId
+                };
+
+                managerProducts.push(product);
+                saveManagerProducts();
+
+                if (nameInput) nameInput.value = "";
+                if (priceInput) priceInput.value = "";
+                if (categoryInput) categoryInput.value = "";
+                if (imageInput) imageInput.value = "";
+
+                if (typeof renderManagerProducts === "function") {
+                    renderManagerProducts();
+                }
+
+                if (typeof renderProducts === "function") {
+                    renderProducts();
+                }
+
+                if (typeof renderCategories === "function") {
+                    renderCategories();
+                }
+
+                showOfficialPopup(
+                    "Product Added",
+                    '"' + name + '" has been added successfully.'
+                );
+            });
+        }
+    }
+
+    if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", setupButtons);
+    } else {
+        setupButtons();
+    }
+
+    const observer = new MutationObserver(function () {
+        setupButtons();
+    });
+
+    if (document.body) {
+        observer.observe(document.body, {
+            childList: true,
+            subtree: true
+        });
+    }
+})();
