@@ -31,20 +31,25 @@ const categories = [
 ];
 
 // ---------- APP STATE ----------
-let cart = [];
-let wishlist = [];
-let orders = [];
+let cart =
+    JSON.parse(localStorage.getItem("bharapurCart")) || [];
+
+let wishlist =
+    JSON.parse(localStorage.getItem("bharapurWishlist")) || [];
+
+let orders =
+    JSON.parse(localStorage.getItem("bharapurOrders")) || [];
 let currentCategory = "All";
 let currentPage = "homePage";
 
 // ---------- OWNER ----------
-const ADMIN_PASSWORD = "CHANGE_THIS_PASSWORD";
+const ADMIN_PASSWORD = "ASHU_ARHAM";
 
 let ownerProducts =
     JSON.parse(localStorage.getItem("ownerProducts")) || [];
 
 // ---------- MANAGER ----------
-const MANAGER_CODE = "BHARAPUR-MANAGER";
+const MANAGER_CODE = "MANAGER-786";
 
 let managerProducts =
     JSON.parse(localStorage.getItem("managerProducts")) || [];
@@ -802,7 +807,29 @@ function renderOrders() {
                 </span>
             </div>
         `;
-
+if (order.status !== "Cancelled") {
+    card.insertAdjacentHTML(
+        "beforeend",
+        `
+        <button
+            type="button"
+            class="bq-order-cancel-btn"
+            onclick="bqCancelOrder('${order.id}')"
+        >
+            Cancel Order
+        </button>
+        `
+    );
+} else {
+    card.insertAdjacentHTML(
+        "beforeend",
+        `
+        <div class="bq-order-cancelled">
+            Order Cancelled
+        </div>
+        `
+    );
+}
         container.appendChild(card);
     });
 }
@@ -4355,566 +4382,7 @@ renderWishlist = function() {
    BHARAPUR QUICK - ADDRESS + ORDER SYSTEM
    ========================================================= */
 
-(function () {
-    "use strict";
 
-    function BQOrderGet(id) {
-        return document.getElementById(id);
-    }
-
-    function BQOrderDeliveryCharge(subtotal) {
-        if (subtotal < 60) return 5;
-        if (subtotal < 100) return 7;
-        return 10;
-    }
-
-    function BQOrderAddressPopup() {
-        const old = BQOrderGet("bqOrderAddressModal");
-
-        if (old) {
-            old.remove();
-        }
-
-        const modal = document.createElement("div");
-
-        modal.id = "bqOrderAddressModal";
-
-        modal.style.cssText = `
-            position:fixed;
-            inset:0;
-            z-index:100000;
-            background:rgba(0,0,0,.55);
-            display:flex;
-            align-items:center;
-            justify-content:center;
-            padding:18px;
-            box-sizing:border-box;
-        `;
-
-        modal.innerHTML = `
-            <div style="
-                width:min(100%,420px);
-                max-height:90vh;
-                overflow:auto;
-                background:#fff;
-                border-radius:22px;
-                padding:22px;
-                box-sizing:border-box;
-                box-shadow:0 20px 60px rgba(0,0,0,.25);
-            ">
-
-                <div style="
-                    display:flex;
-                    justify-content:space-between;
-                    align-items:center;
-                    margin-bottom:18px;
-                ">
-                    <div>
-                        <h2 style="margin:0 0 5px;">
-                            📍 Delivery Address
-                        </h2>
-
-                        <p style="
-                            margin:0;
-                            color:#777;
-                            font-size:13px;
-                        ">
-                            Enter your address for this order.
-                        </p>
-                    </div>
-
-                    <button
-                        id="bqOrderAddressClose"
-                        type="button"
-                        style="
-                            border:none;
-                            background:#f2f2f2;
-                            width:38px;
-                            height:38px;
-                            border-radius:50%;
-                            font-size:22px;
-                        "
-                    >
-                        ×
-                    </button>
-                </div>
-
-                <label style="
-                    display:block;
-                    font-weight:700;
-                    margin-bottom:6px;
-                ">
-                    Full address
-                </label>
-
-                <textarea
-                    id="bqOrderAddressInput"
-                    rows="5"
-                    placeholder="House/Flat number, street, area, landmark..."
-                    style="
-                        width:100%;
-                        box-sizing:border-box;
-                        padding:14px;
-                        border:1px solid #ddd;
-                        border-radius:14px;
-                        resize:vertical;
-                        font-size:15px;
-                        outline:none;
-                    "
-                ></textarea>
-
-                <p
-                    id="bqOrderAddressError"
-                    style="
-                        display:none;
-                        color:#c62828;
-                        font-size:13px;
-                        margin:7px 0 0;
-                    "
-                ></p>
-
-                <button
-                    id="bqContinueAddressButton"
-                    type="button"
-                    style="
-                        width:100%;
-                        margin-top:16px;
-                        padding:15px;
-                        border:none;
-                        border-radius:14px;
-                        background:#111;
-                        color:#fff;
-                        font-size:16px;
-                        font-weight:700;
-                    "
-                >
-                    Continue
-                </button>
-
-            </div>
-        `;
-
-        document.body.appendChild(modal);
-
-        const input =
-            BQOrderGet("bqOrderAddressInput");
-
-        const close =
-            BQOrderGet("bqOrderAddressClose");
-
-        const continueButton =
-            BQOrderGet("bqContinueAddressButton");
-
-        if (close) {
-            close.addEventListener("click", () => {
-                modal.remove();
-            });
-        }
-
-        modal.addEventListener("click", event => {
-            if (event.target === modal) {
-                modal.remove();
-            }
-        });
-
-        if (continueButton) {
-            continueButton.addEventListener(
-                "click",
-                () => {
-                    const address =
-                        input
-                            ? input.value.trim()
-                            : "";
-
-                    const error =
-                        BQOrderGet(
-                            "bqOrderAddressError"
-                        );
-
-                    if (!address) {
-                        if (error) {
-                            error.textContent =
-                                "Please enter your delivery address.";
-                            error.style.display =
-                                "block";
-                        }
-
-                        if (input) {
-                            input.focus();
-                        }
-
-                        return;
-                    }
-
-                    modal.remove();
-
-                    BQShowOrderSummary(address);
-                }
-            );
-        }
-
-        setTimeout(() => {
-            if (input) input.focus();
-        }, 100);
-    }
-
-    function BQShowOrderSummary(address) {
-        if (!Array.isArray(cart) || cart.length === 0) {
-            if (typeof showOfficialPopup === "function") {
-                showOfficialPopup(
-                    "Cart is Empty",
-                    "Please add products before placing an order."
-                );
-            }
-
-            return;
-        }
-
-        let subtotal = 0;
-
-        cart.forEach(item => {
-            subtotal +=
-                Number(item.price) *
-                Number(item.quantity);
-        });
-
-        const delivery =
-            BQOrderDeliveryCharge(subtotal);
-
-        const finalTotal =
-            subtotal + delivery;
-
-        const old =
-            BQOrderGet("bqOrderSummaryModal");
-
-        if (old) {
-            old.remove();
-        }
-
-        const modal =
-            document.createElement("div");
-
-        modal.id =
-            "bqOrderSummaryModal";
-
-        modal.style.cssText = `
-            position:fixed;
-            inset:0;
-            z-index:100001;
-            background:rgba(0,0,0,.55);
-            display:flex;
-            align-items:center;
-            justify-content:center;
-            padding:18px;
-            box-sizing:border-box;
-        `;
-
-        const itemsHTML =
-            cart.map(item => `
-                <div style="
-                    display:flex;
-                    justify-content:space-between;
-                    gap:10px;
-                    padding:8px 0;
-                    border-bottom:1px solid #eee;
-                ">
-                    <span>
-                        ${BQOrderEscape(item.name)}
-                        × ${Number(item.quantity)}
-                    </span>
-
-                    <strong>
-                        ₹${Number(item.price) * Number(item.quantity)}
-                    </strong>
-                </div>
-            `).join("");
-
-        modal.innerHTML = `
-            <div style="
-                width:min(100%,430px);
-                max-height:90vh;
-                overflow:auto;
-                background:#fff;
-                border-radius:22px;
-                padding:22px;
-                box-sizing:border-box;
-                box-shadow:0 20px 60px rgba(0,0,0,.25);
-            ">
-
-                <h2 style="
-                    margin:0 0 18px;
-                ">
-                    🧾 Order Summary
-                </h2>
-
-                <div style="
-                    background:#f7f7f7;
-                    border-radius:14px;
-                    padding:12px;
-                    margin-bottom:16px;
-                    font-size:14px;
-                    line-height:1.5;
-                ">
-                    <strong>📍 Delivery Address</strong>
-                    <div style="
-                        margin-top:5px;
-                        color:#555;
-                    ">
-                        ${BQOrderEscape(address)}
-                    </div>
-                </div>
-
-                <div style="
-                    margin-bottom:16px;
-                ">
-                    ${itemsHTML}
-                </div>
-
-                <div style="
-                    padding-top:8px;
-                ">
-                    <div style="
-                        display:flex;
-                        justify-content:space-between;
-                        margin:8px 0;
-                    ">
-                        <span>Items total</span>
-                        <strong>₹${subtotal}</strong>
-                    </div>
-
-                    <div style="
-                        display:flex;
-                        justify-content:space-between;
-                        margin:8px 0;
-                    ">
-                        <span>Delivery charge</span>
-                        <strong>₹${delivery}</strong>
-                    </div>
-
-                    <div style="
-                        display:flex;
-                        justify-content:space-between;
-                        margin-top:14px;
-                        padding-top:14px;
-                        border-top:1px solid #ddd;
-                        font-size:19px;
-                    ">
-                        <strong>Total</strong>
-                        <strong>₹${finalTotal}</strong>
-                    </div>
-                </div>
-
-                <button
-                    id="bqConfirmOrderButton"
-                    type="button"
-                    style="
-                        width:100%;
-                        margin-top:18px;
-                        padding:15px;
-                        border:none;
-                        border-radius:14px;
-                        background:#111;
-                        color:#fff;
-                        font-size:16px;
-                        font-weight:700;
-                    "
-                >
-                    Confirm Order · ₹${finalTotal}
-                </button>
-
-                <button
-                    id="bqBackToAddressButton"
-                    type="button"
-                    style="
-                        width:100%;
-                        margin-top:9px;
-                        padding:13px;
-                        border:none;
-                        border-radius:14px;
-                        background:#f1f1f1;
-                        color:#111;
-                        font-size:15px;
-                        font-weight:700;
-                    "
-                >
-                    Change Address
-                </button>
-
-            </div>
-        `;
-
-        document.body.appendChild(modal);
-
-        const confirmButton =
-            BQOrderGet("bqConfirmOrderButton");
-
-        const backButton =
-            BQOrderGet("bqBackToAddressButton");
-
-        if (backButton) {
-            backButton.addEventListener(
-                "click",
-                () => {
-                    modal.remove();
-                    BQOrderAddressPopup();
-                }
-            );
-        }
-
-        if (confirmButton) {
-            confirmButton.addEventListener(
-                "click",
-                () => {
-                    BQConfirmOrder(
-                        address,
-                        subtotal,
-                        delivery,
-                        finalTotal
-                    );
-                }
-            );
-        }
-    }
-
-    function BQConfirmOrder(
-        address,
-        subtotal,
-        delivery,
-        finalTotal
-    ) {
-        if (!Array.isArray(cart) || cart.length === 0) {
-            return;
-        }
-
-        const order = {
-            id:
-                "BQ-" +
-                Date.now(),
-
-            items:
-                JSON.parse(
-                    JSON.stringify(cart)
-                ),
-
-            address:
-                address,
-
-            subtotal:
-                subtotal,
-
-            deliveryCharge:
-                delivery,
-
-            total:
-                finalTotal,
-
-            date:
-                new Date().toLocaleString(),
-
-            status:
-                "Confirmed"
-        };
-
-        if (!Array.isArray(orders)) {
-            orders = [];
-        }
-
-        orders.unshift(order);
-
-        localStorage.setItem(
-            "bharapurOrders",
-            JSON.stringify(orders)
-        );
-
-        cart = [];
-
-        localStorage.setItem(
-            "bharapurCart",
-            JSON.stringify(cart)
-        );
-
-        const summary =
-            BQOrderGet(
-                "bqOrderSummaryModal"
-            );
-
-        if (summary) {
-            summary.remove();
-        }
-
-        if (typeof renderCart === "function") {
-            renderCart();
-        }
-
-        if (typeof updateCartCount === "function") {
-            updateCartCount();
-        }
-
-        if (typeof renderOrders === "function") {
-            renderOrders();
-        }
-
-        if (typeof closeCart === "function") {
-            closeCart();
-        }
-
-        if (typeof showOfficialPopup === "function") {
-            showOfficialPopup(
-                "Order Confirmed 🎉",
-                `Your order ${order.id} has been placed successfully. Total: ₹${finalTotal}`
-            );
-        }
-    }
-
-    function BQOrderEscape(value) {
-        return String(value ?? "")
-            .replace(/&/g, "&amp;")
-            .replace(/</g, "&lt;")
-            .replace(/>/g, "&gt;")
-            .replace(/"/g, "&quot;")
-            .replace(/'/g, "&#039;");
-    }
-
-    /*
-       Replace the existing checkout action.
-       The cart button still uses the same HTML button.
-    */
-    document.addEventListener(
-        "click",
-        function (event) {
-            const button =
-                event.target.closest(
-                    "#checkoutButton"
-                );
-
-            if (!button) return;
-
-            event.preventDefault();
-            event.stopImmediatePropagation();
-
-            if (
-                !Array.isArray(cart) ||
-                cart.length === 0
-            ) {
-                if (
-                    typeof showOfficialPopup ===
-                    "function"
-                ) {
-                    showOfficialPopup(
-                        "Cart is Empty",
-                        "Please add products before placing an order."
-                    );
-                }
-
-                return;
-            }
-
-            BQOrderAddressPopup();
-        },
-        true
-    );
-
-})();
 /* =========================================================
    BHARAPUR QUICK - FULL CHECKOUT + PAYMENT + CANCELLATION
    ========================================================= */
@@ -5729,7 +5197,82 @@ renderWishlist = function() {
     /* =====================================================
        CANCEL EXISTING ORDER
        ===================================================== */
+function bqShowCancelPopup(orderId, onConfirm) {
 
+    const old =
+        document.getElementById("bqCancelPopup");
+
+    if (old) old.remove();
+
+    const popup =
+        document.createElement("div");
+
+    popup.id = "bqCancelPopup";
+
+    popup.innerHTML = `
+        <div class="bq-message-overlay">
+
+            <div class="bq-message-box">
+
+                <div class="bq-message-icon">
+                    ❓
+                </div>
+
+                <h3>
+                    Cancel Order?
+                </h3>
+
+                <p>
+                    Are you sure you want to cancel
+                    order ${escapeHTML(orderId)}?
+                </p>
+
+                <button
+                    type="button"
+                    class="bq-message-ok"
+                    id="bqCancelYes"
+                >
+                    Yes, Cancel Order
+                </button>
+
+                <button
+                    type="button"
+                    id="bqCancelNo"
+                    style="
+                        width:100%;
+                        margin-top:10px;
+                        padding:12px;
+                        border:none;
+                        border-radius:14px;
+                        background:#eee;
+                        color:#333;
+                        font-size:15px;
+                        font-weight:700;
+                    "
+                >
+                    No, Keep Order
+                </button>
+
+            </div>
+
+        </div>
+    `;
+
+    document.body.appendChild(popup);
+
+    document
+        .getElementById("bqCancelYes")
+        .onclick = function () {
+            popup.remove();
+            onConfirm();
+        };
+
+    document
+        .getElementById("bqCancelNo")
+        .onclick = function () {
+            popup.remove();
+        };
+}
     window.bqCancelOrder = function (orderId) {
 
         if (
@@ -5751,16 +5294,31 @@ renderWishlist = function() {
             return;
         }
 
-        const shouldCancel =
-            confirm(
-                "Cancel order " +
-                orderId +
-                "?"
-            );
+       bqShowCancelPopup(orderId, function () {
 
-        if (!shouldCancel) {
-            return;
-        }
+    order.status = "Cancelled";
+
+    order.cancelledAt =
+        new Date().toLocaleString();
+
+    localStorage.setItem(
+        "bharapurOrders",
+        JSON.stringify(orders)
+    );
+
+    if (
+        typeof renderOrders ===
+        "function"
+    ) {
+        renderOrders();
+    }
+
+    bqShowMessage(
+        "Order " +
+        orderId +
+        " has been cancelled."
+    );
+}); 
 
         order.status = "Cancelled";
 
@@ -5809,6 +5367,719 @@ renderWishlist = function() {
 
         },
         true
+    );
+
+})();
+/* ======================================on====
+   BHARAPUR QUICK - BEAUTIFUL VALIDATION POPUP
+   ========================================== */
+
+function bqShowMessage(message, title = "Please check") {
+    const oldPopup = document.getElementById("bqMessagePopup");
+
+    if (oldPopup) {
+        oldPopup.remove();
+    }
+
+    const popup = document.createElement("div");
+
+    popup.id = "bqMessagePopup";
+
+    popup.innerHTML = `
+        <div class="bq-message-overlay">
+            <div class="bq-message-box">
+
+                <div class="bq-message-icon">
+                    ⚠️
+                </div>
+
+                <h3>
+                    ${escapeHTML(title)}
+                </h3>
+
+                <p>
+                    ${escapeHTML(message)}
+                </p>
+
+                <button
+                    type="button"
+                    id="bqMessageOK"
+                    class="bq-message-ok"
+                >
+                    OK
+                </button>
+
+            </div>
+        </div>
+    `;
+
+    document.body.appendChild(popup);
+
+    const okButton =
+        document.getElementById("bqMessageOK");
+
+    if (okButton) {
+        okButton.addEventListener("click", () => {
+            popup.remove();
+        });
+    }
+}
+
+
+/* ==========================================
+   REPLACE DEFAULT ALERT WITH BEAUTIFUL POPUP
+   ========================================== */
+
+const bqOriginalAlert = window.alert;
+
+window.alert = function (message) {
+
+    bqShowMessage(
+        String(message),
+        "Please check"
+    );
+};
+/* ==========================================
+   BEAUTIFUL VALIDATION POPUP
+   ========================================== */
+
+function bqShowMessage(message) {
+    const old = document.getElementById("bqMessagePopup");
+
+    if (old) old.remove();
+
+    const popup = document.createElement("div");
+
+    popup.id = "bqMessagePopup";
+
+    popup.innerHTML = `
+        <div class="bq-message-overlay">
+            <div class="bq-message-box">
+
+                <div class="bq-message-icon">⚠️</div>
+
+                <h3>Please check</h3>
+
+                <p>${escapeHTML(message)}</p>
+
+                <button
+                    type="button"
+                    class="bq-message-ok"
+                    id="bqMessageOK"
+                >
+                    OK
+                </button>
+
+            </div>
+        </div>
+    `;
+
+    document.body.appendChild(popup);
+
+    document
+        .getElementById("bqMessageOK")
+        .onclick = () => popup.remove();
+}
+
+/* Replace normal alert */
+window.alert = function(message) {
+    bqShowMessage(String(message));
+};/* =========================================================
+   BHARAPUR QUICK - MANAGER + OWNER ACCESS
+   ========================================================= */
+
+(function () {
+
+    const BQ_MANAGER_CODE = "BQ-MANAGER-2045";
+    const BQ_OWNER_CODE = "BQ-OWNER-2045";
+
+    function bqOwnerEscape(value) {
+        return String(value ?? "")
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+    }
+
+    function bqOwnerPanel() {
+
+        const old = document.getElementById("bqOwnerAccessPopup");
+
+        if (old) old.remove();
+
+        const popup = document.createElement("div");
+
+        popup.id = "bqOwnerAccessPopup";
+
+        popup.innerHTML = `
+            <div class="bq-owner-overlay">
+
+                <div class="bq-owner-box">
+
+                    <div class="bq-owner-icon">🔐</div>
+
+                    <h2>Dealer / Owner Access</h2>
+
+                    <p class="bq-owner-subtitle">
+                        Enter your access code
+                    </p>
+
+                    <input
+                        id="bqOwnerCodeInput"
+                        class="bq-owner-input"
+                        type="password"
+                        placeholder="Enter access code"
+                        autocomplete="off"
+                    >
+
+                    <button
+                        type="button"
+                        id="bqOwnerVerifyCode"
+                        class="bq-owner-primary"
+                    >
+                        Continue
+                    </button>
+
+                    <button
+                        type="button"
+                        id="bqOwnerClose"
+                        class="bq-owner-secondary"
+                    >
+                        Cancel
+                    </button>
+
+                    <div
+                        id="bqOwnerCodeError"
+                        class="bq-owner-error"
+                        style="display:none;"
+                    >
+                        Invalid access code.
+                    </div>
+
+                </div>
+
+            </div>
+        `;
+
+        document.body.appendChild(popup);
+
+        document
+            .getElementById("bqOwnerClose")
+            .onclick = function () {
+                popup.remove();
+            };
+
+        document
+            .getElementById("bqOwnerVerifyCode")
+            .onclick = function () {
+
+                const code =
+                    document
+                        .getElementById("bqOwnerCodeInput")
+                        .value
+                        .trim();
+
+                if (code === BQ_OWNER_CODE) {
+
+                    popup.remove();
+
+                    bqOwnerPhonePopup("Owner");
+
+                    return;
+                }
+
+                if (code === BQ_MANAGER_CODE) {
+
+                    popup.remove();
+
+                    bqOwnerPhonePopup("Manager");
+
+                    return;
+                }
+
+                document
+                    .getElementById("bqOwnerCodeError")
+                    .style.display = "block";
+            };
+    }
+
+
+    function bqOwnerPhonePopup(role) {
+
+        const popup = document.createElement("div");
+
+        popup.id = "bqOwnerPhonePopup";
+
+        popup.innerHTML = `
+            <div class="bq-owner-overlay">
+
+                <div class="bq-owner-box">
+
+                    <div class="bq-owner-icon">📱</div>
+
+                    <h2>${role} Setup</h2>
+
+                    <p class="bq-owner-subtitle">
+                        Enter your WhatsApp phone number
+                    </p>
+
+                    <input
+                        id="bqOwnerPhoneInput"
+                        class="bq-owner-input"
+                        type="tel"
+                        inputmode="numeric"
+                        placeholder="Enter phone number"
+                        autocomplete="off"
+                    >
+
+                    <button
+                        type="button"
+                        id="bqOwnerSavePhone"
+                        class="bq-owner-primary"
+                    >
+                        Confirm ${role}
+                    </button>
+
+                    <button
+                        type="button"
+                        id="bqOwnerPhoneClose"
+                        class="bq-owner-secondary"
+                    >
+                        Cancel
+                    </button>
+
+                    <div
+                        id="bqOwnerPhoneError"
+                        class="bq-owner-error"
+                        style="display:none;"
+                    >
+                        Please enter a valid phone number.
+                    </div>
+
+                </div>
+
+            </div>
+        `;
+
+        document.body.appendChild(popup);
+
+        document
+            .getElementById("bqOwnerPhoneClose")
+            .onclick = function () {
+                popup.remove();
+            };
+
+        document
+            .getElementById("bqOwnerSavePhone")
+            .onclick = function () {
+
+                const phone =
+                    document
+                        .getElementById("bqOwnerPhoneInput")
+                        .value
+                        .trim();
+
+                const digits =
+                    phone.replace(/\D/g, "");
+
+                if (digits.length < 10) {
+
+                    document
+                        .getElementById("bqOwnerPhoneError")
+                        .style.display = "block";
+
+                    return;
+                }
+
+                let owners =
+                    JSON.parse(
+                        localStorage.getItem(
+                            "bharapurOwners"
+                        )
+                    ) || [];
+
+                const exists =
+                    owners.some(function (item) {
+                        return item.phone === digits;
+                    });
+
+                if (!exists) {
+
+                    owners.push({
+                        phone: digits,
+                        role: role,
+                        addedAt:
+                            new Date().toLocaleString()
+                    });
+
+                    localStorage.setItem(
+                        "bharapurOwners",
+                        JSON.stringify(owners)
+                    );
+                }
+
+                popup.remove();
+
+                bqShowMessage(
+                    role +
+                    " confirmed successfully."
+                );
+            };
+    }
+
+
+    /* Create access button */
+
+   
+
+})();/* =========================================================
+   BHARAPUR QUICK - OWNER / MANAGER ORDERS PANEL
+   ========================================================= */
+
+(function () {
+
+    const MANAGER_CODE = "BQ-MANAGER-2045";
+    const OWNER_CODE = "BQ-OWNER-2045";
+
+    function openDealerPanel() {
+
+        const old = document.getElementById("bqDealerPanel");
+
+        if (old) old.remove();
+
+        const panel = document.createElement("div");
+
+        panel.id = "bqDealerPanel";
+
+        panel.innerHTML = `
+            <div class="bq-dealer-overlay">
+
+                <div class="bq-dealer-box">
+
+                    <div class="bq-dealer-header">
+                        <div>
+                            <div class="bq-dealer-title">
+                                Dealer / Owner
+                            </div>
+                            <div class="bq-dealer-subtitle">
+                                Order Management
+                            </div>
+                        </div>
+
+                        <button
+                            type="button"
+                            id="bqDealerClose"
+                            class="bq-dealer-close"
+                        >
+                            ×
+                        </button>
+                    </div>
+
+                    <div class="bq-dealer-login">
+
+                        <input
+                            id="bqDealerCode"
+                            type="password"
+                            class="bq-dealer-input"
+                            placeholder="Enter Manager / Owner Code"
+                            autocomplete="off"
+                        >
+
+                        <button
+                            type="button"
+                            id="bqDealerLoginBtn"
+                            class="bq-dealer-primary"
+                        >
+                            Open Orders
+                        </button>
+
+                        <div
+                            id="bqDealerError"
+                            class="bq-dealer-error"
+                            style="display:none;"
+                        >
+                            Invalid Manager / Owner Code
+                        </div>
+
+                    </div>
+
+                    <div
+                        id="bqDealerOrders"
+                        class="bq-dealer-orders"
+                        style="display:none;"
+                    ></div>
+
+                </div>
+
+            </div>
+        `;
+
+        document.body.appendChild(panel);
+
+        document.getElementById("bqDealerClose").onclick =
+            function () {
+                panel.remove();
+            };
+
+        document.getElementById("bqDealerLoginBtn").onclick =
+            function () {
+
+                const code =
+                    document
+                        .getElementById("bqDealerCode")
+                        .value
+                        .trim();
+
+                if (
+                    code !== MANAGER_CODE &&
+                    code !== OWNER_CODE
+                ) {
+
+                    document
+                        .getElementById("bqDealerError")
+                        .style.display = "block";
+
+                    return;
+                }
+
+                document
+                    .querySelector(".bq-dealer-login")
+                    .style.display = "none";
+
+                document
+                    .getElementById("bqDealerOrders")
+                    .style.display = "block";
+
+                renderDealerOrders();
+            };
+    }
+
+
+    function renderDealerOrders() {
+
+        const container =
+            document.getElementById(
+                "bqDealerOrders"
+            );
+
+        if (!container) return;
+
+        const savedOrders =
+            JSON.parse(
+                localStorage.getItem(
+                    "bharapurOrders"
+                )
+            ) || [];
+
+        if (!savedOrders.length) {
+
+            container.innerHTML = `
+                <div class="bq-no-orders">
+                    <div>📦</div>
+                    <h3>No Orders Yet</h3>
+                    <p>
+                        New customer orders will appear here.
+                    </p>
+                </div>
+            `;
+
+            return;
+        }
+
+        container.innerHTML = `
+            <div class="bq-orders-heading">
+                Customer Orders
+            </div>
+        `;
+
+        savedOrders
+            .slice()
+            .reverse()
+            .forEach(function (order) {
+
+                const card =
+                    document.createElement("div");
+
+                card.className =
+                    "bq-dealer-order-card";
+
+                const items =
+                    Array.isArray(order.items)
+                        ? order.items
+                        : [];
+
+                const itemHTML =
+                    items.map(function (item) {
+
+                        return `
+                            <div class="bq-dealer-item">
+                                <span>
+                                    ${escapeHTML(
+                                        item.name ||
+                                        item.title ||
+                                        "Item"
+                                    )}
+                                </span>
+
+                                <strong>
+                                    ×${item.qty || 1}
+                                </strong>
+                            </div>
+                        `;
+
+                    }).join("");
+
+                const status =
+                    order.status || "Confirmed";
+
+                card.innerHTML = `
+                    <div class="bq-dealer-order-top">
+
+                        <strong>
+                            ${escapeHTML(
+                                order.id || "Order"
+                            )}
+                        </strong>
+
+                        <span>
+                            ${escapeHTML(status)}
+                        </span>
+
+                    </div>
+
+                    <div class="bq-dealer-customer">
+                        <strong>
+                            ${escapeHTML(
+                                order.customerName ||
+                                "Customer"
+                            )}
+                        </strong>
+
+                        <div>
+                            📞 ${escapeHTML(
+                                order.phone ||
+                                "No phone added"
+                            )}
+                        </div>
+                    </div>
+
+                    <div class="bq-dealer-items">
+                        ${itemHTML}
+                    </div>
+
+                    <div class="bq-dealer-address">
+                        <strong>Delivery Address</strong>
+
+                        <div>
+                            ${escapeHTML(
+                                order.street || ""
+                            )}
+                        </div>
+
+                        <div>
+                            ${escapeHTML(
+                                order.area || ""
+                            )}
+                        </div>
+
+                        <div>
+                            ${escapeHTML(
+                                order.town || ""
+                            )}
+                        </div>
+                    </div>
+
+                    <div class="bq-dealer-payment">
+
+                        <div>
+                            Payment:
+                            <strong>
+                                ${escapeHTML(
+                                    order.paymentMethod ||
+                                    "Not specified"
+                                )}
+                            </strong>
+                        </div>
+
+                        <div>
+                            Subtotal:
+                            ₹${Number(
+                                order.subtotal || 0
+                            ).toFixed(2)}
+                        </div>
+
+                        <div>
+                            Delivery:
+                            ₹${Number(
+                                order.deliveryCharge || 0
+                            ).toFixed(2)}
+                        </div>
+
+                        <div class="bq-dealer-total">
+                            Total:
+                            ₹${Number(
+                                order.total || 0
+                            ).toFixed(2)}
+                        </div>
+
+                    </div>
+
+                    <div class="bq-dealer-date">
+                        ${escapeHTML(
+                            order.date || ""
+                        )}
+                    </div>
+                `;
+
+                container.appendChild(card);
+            });
+    }
+
+
+    /* Open panel from existing Orders tab */
+
+    document.addEventListener(
+        "click",
+        function (event) {
+
+            const target =
+                event.target.closest(
+                    "#ordersTab, [data-tab='orders'], .orders-tab"
+                );
+
+            if (!target) return;
+
+            setTimeout(function () {
+
+                const existing =
+                    document.getElementById(
+                        "bqDealerOrdersButton"
+                    );
+
+                if (existing) return;
+
+                const button =
+                    document.createElement("button");
+
+                button.id =
+                    "bqDealerOrdersButton";
+
+                button.type = "button";
+
+                button.className =
+                    "bq-dealer-open-button";
+
+                button.innerHTML =
+                    "🔐 Manager / Owner Orders";
+
+                button.onclick =
+                    openDealerPanel;
+
+                document.body.appendChild(button);
+
+            }, 300);
+        }
     );
 
 })();
